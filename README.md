@@ -2,6 +2,8 @@
 
 The branch from the e9a5903edf commit of x264, the previously analysed version of x264. 
 
+Compiling
+---
 Here is a useful Dockerfile to clone and compile x264 (to its e9a5903edf commit). 
 Author: LL
 
