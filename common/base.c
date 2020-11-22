@@ -440,7 +440,9 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
     param->analyse.f_psy_trellis = 0;
     param->analyse.i_me_range = 16;
     param->analyse.i_subpel_refine = 7;
+    #if MIXED_REFS
     param->analyse.b_mixed_references = 1;
+    #endif
     param->analyse.b_chroma_me = 1;
     param->analyse.i_mv_range_thread = -1;
     param->analyse.i_mv_range = -1; // set from level_idc
@@ -504,7 +506,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->analyse.i_me_method = X264_ME_DIA;
         param->analyse.i_subpel_refine = 0;
         param->rc.i_aq_mode = 0;
+        #if MIXED_REFS
         param->analyse.b_mixed_references = 0;
+        #endif
         param->analyse.i_trellis = 0;
         param->i_bframe_adaptive = X264_B_ADAPT_NONE;
         param->rc.b_mb_tree = 0;
@@ -518,7 +522,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->analyse.i_me_method = X264_ME_DIA;
         param->analyse.i_subpel_refine = 1;
         param->i_frame_reference = 1;
+        #if MIXED_REFS
         param->analyse.b_mixed_references = 0;
+        #endif
         param->analyse.i_trellis = 0;
         param->rc.b_mb_tree = 0;
         param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
@@ -528,14 +534,18 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
     {
         param->analyse.i_subpel_refine = 2;
         param->i_frame_reference = 1;
+        #if MIXED_REFS
         param->analyse.b_mixed_references = 0;
+        #endif
         param->analyse.i_trellis = 0;
         param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
         param->rc.i_lookahead = 10;
     }
     else if( !strcasecmp( preset, "faster" ) )
     {
+        #if MIXED_REFS
         param->analyse.b_mixed_references = 0;
+        #endif
         param->i_frame_reference = 2;
         param->analyse.i_subpel_refine = 4;
         param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
@@ -1253,8 +1263,10 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
         p->analyse.b_psy = atobool(value);
     OPT("chroma-me")
         p->analyse.b_chroma_me = atobool(value);
+    #if MIXED_REFS
     OPT("mixed-refs")
         p->analyse.b_mixed_references = atobool(value);
+    #endif
     OPT("trellis")
         p->analyse.i_trellis = atoi(value);
     OPT("fast-pskip")
@@ -1417,7 +1429,9 @@ char *x264_param2string( x264_param_t *p, int b_res )
     s += sprintf( s, " psy=%d", p->analyse.b_psy );
     if( p->analyse.b_psy )
         s += sprintf( s, " psy_rd=%.2f:%.2f", p->analyse.f_psy_rd, p->analyse.f_psy_trellis );
+    #if MIXED_REFS
     s += sprintf( s, " mixed_ref=%d", p->analyse.b_mixed_references );
+    #endif
     s += sprintf( s, " me_range=%d", p->analyse.i_me_range );
     s += sprintf( s, " chroma_me=%d", p->analyse.b_chroma_me );
     s += sprintf( s, " trellis=%d", p->analyse.i_trellis );

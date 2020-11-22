@@ -47,6 +47,7 @@
 #include <string.h>
 #include <assert.h>
 #include <limits.h>
+#include "removeoption.h"
 
 /****************************************************************************
  * Macros
