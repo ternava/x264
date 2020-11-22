@@ -1109,6 +1109,7 @@ int x264_quant_luma_dc_trellis( x264_t *h, dctcoef *dct, int i_quant_cat, int i_
 static const uint8_t zigzag_scan2x2[4] = { 0, 1, 2, 3 };
 static const uint8_t zigzag_scan2x4[8] = { 0, 2, 1, 4, 6, 3, 5, 7 };
 
+#if TRELLIS
 int x264_quant_chroma_dc_trellis( x264_t *h, dctcoef *dct, int i_qp, int b_intra, int idx )
 {
     const uint8_t *zigzag;
@@ -1136,7 +1137,9 @@ int x264_quant_chroma_dc_trellis( x264_t *h, dctcoef *dct, int i_qp, int b_intra
         h->quant4_mf[quant_cat][i_qp], h->unquant4_mf[quant_cat][i_qp], zigzag,
         DCT_CHROMA_DC, h->mb.i_trellis_lambda2[1][b_intra], 0, 1, 1, num_coefs, idx, 0 );
 }
+#endif
 
+#if TRELLIS
 int x264_quant_4x4_trellis( x264_t *h, dctcoef *dct, int i_quant_cat,
                             int i_qp, int ctx_block_cat, int b_intra, int b_chroma, int idx )
 {
@@ -1153,7 +1156,9 @@ int x264_quant_4x4_trellis( x264_t *h, dctcoef *dct, int i_quant_cat,
             x264_zigzag_scan4[MB_INTERLACED],
             ctx_block_cat, h->mb.i_trellis_lambda2[b_chroma][b_intra], b_ac, b_chroma, 0, 16, idx, 0 );
 }
+#endif
 
+#if TRELLIS
 int x264_quant_8x8_trellis( x264_t *h, dctcoef *dct, int i_quant_cat,
                             int i_qp, int ctx_block_cat, int b_intra, int b_chroma, int idx )
 {
@@ -1180,3 +1185,4 @@ int x264_quant_8x8_trellis( x264_t *h, dctcoef *dct, int i_quant_cat,
     STORE_8x8_NNZ( 0, idx, 0 );
     return nzaccum;
 }
+#endif

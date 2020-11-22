@@ -440,9 +440,9 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
     param->analyse.f_psy_trellis = 0;
     param->analyse.i_me_range = 16;
     param->analyse.i_subpel_refine = 7;
-    #if MIXED_REFS
+#if MIXED_REFS
     param->analyse.b_mixed_references = 1;
-    #endif
+#endif
     param->analyse.b_chroma_me = 1;
     param->analyse.i_mv_range_thread = -1;
     param->analyse.i_mv_range = -1; // set from level_idc
@@ -452,7 +452,9 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
     param->analyse.i_weighted_pred = X264_WEIGHTP_SMART;
     param->analyse.b_dct_decimate = 1;
     param->analyse.b_transform_8x8 = 1;
+#if TRELLIS
     param->analyse.i_trellis = 1;
+#endif
     param->analyse.i_luma_deadzone[0] = 21;
     param->analyse.i_luma_deadzone[1] = 11;
     param->analyse.b_psnr = 0;
@@ -506,10 +508,12 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->analyse.i_me_method = X264_ME_DIA;
         param->analyse.i_subpel_refine = 0;
         param->rc.i_aq_mode = 0;
-        #if MIXED_REFS
+#if MIXED_REFS
         param->analyse.b_mixed_references = 0;
-        #endif
+#endif
+#if TRELLIS
         param->analyse.i_trellis = 0;
+#endif
         param->i_bframe_adaptive = X264_B_ADAPT_NONE;
         param->rc.b_mb_tree = 0;
         param->analyse.i_weighted_pred = X264_WEIGHTP_NONE;
@@ -522,10 +526,12 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->analyse.i_me_method = X264_ME_DIA;
         param->analyse.i_subpel_refine = 1;
         param->i_frame_reference = 1;
-        #if MIXED_REFS
+#if MIXED_REFS
         param->analyse.b_mixed_references = 0;
-        #endif
+#endif
+#if TRELLIS
         param->analyse.i_trellis = 0;
+#endif
         param->rc.b_mb_tree = 0;
         param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
         param->rc.i_lookahead = 0;
@@ -534,18 +540,20 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
     {
         param->analyse.i_subpel_refine = 2;
         param->i_frame_reference = 1;
-        #if MIXED_REFS
+#if MIXED_REFS
         param->analyse.b_mixed_references = 0;
-        #endif
+#endif
+#if TRELLIS
         param->analyse.i_trellis = 0;
+#endif
         param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
         param->rc.i_lookahead = 10;
     }
     else if( !strcasecmp( preset, "faster" ) )
     {
-        #if MIXED_REFS
+#if MIXED_REFS
         param->analyse.b_mixed_references = 0;
-        #endif
+#endif
         param->i_frame_reference = 2;
         param->analyse.i_subpel_refine = 4;
         param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
@@ -567,7 +575,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->analyse.i_subpel_refine = 8;
         param->i_frame_reference = 5;
         param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+#if TRELLIS
         param->analyse.i_trellis = 2;
+#endif
         param->rc.i_lookahead = 50;
     }
     else if( !strcasecmp( preset, "slower" ) )
@@ -578,7 +588,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
         param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
         param->analyse.inter |= X264_ANALYSE_PSUB8x8;
+#if TRELLIS
         param->analyse.i_trellis = 2;
+#endif
         param->rc.i_lookahead = 60;
     }
     else if( !strcasecmp( preset, "veryslow" ) )
@@ -590,7 +602,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
         param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
         param->analyse.inter |= X264_ANALYSE_PSUB8x8;
+#if TRELLIS
         param->analyse.i_trellis = 2;
+#endif
         param->i_bframe = 8;
         param->rc.i_lookahead = 60;
     }
@@ -604,7 +618,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
         param->analyse.inter |= X264_ANALYSE_PSUB8x8;
         param->analyse.b_fast_pskip = 0;
+#if TRELLIS
         param->analyse.i_trellis = 2;
+#endif
         param->i_bframe = 16;
         param->rc.i_lookahead = 60;
     }
@@ -732,7 +748,9 @@ REALIGN_STACK void x264_param_apply_fastfirstpass( x264_param_t *param )
         param->analyse.inter = 0;
         param->analyse.i_me_method = X264_ME_DIA;
         param->analyse.i_subpel_refine = X264_MIN( 2, param->analyse.i_subpel_refine );
+#if TRELLIS
         param->analyse.i_trellis = 0;
+#endif
         param->analyse.b_fast_pskip = 1;
     }
 }
@@ -1263,12 +1281,14 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
         p->analyse.b_psy = atobool(value);
     OPT("chroma-me")
         p->analyse.b_chroma_me = atobool(value);
-    #if MIXED_REFS
+#if MIXED_REFS
     OPT("mixed-refs")
         p->analyse.b_mixed_references = atobool(value);
-    #endif
+#endif
+#if TRELLIS
     OPT("trellis")
         p->analyse.i_trellis = atoi(value);
+#endif
     OPT("fast-pskip")
         p->analyse.b_fast_pskip = atobool(value);
     OPT("dct-decimate")
@@ -1429,12 +1449,14 @@ char *x264_param2string( x264_param_t *p, int b_res )
     s += sprintf( s, " psy=%d", p->analyse.b_psy );
     if( p->analyse.b_psy )
         s += sprintf( s, " psy_rd=%.2f:%.2f", p->analyse.f_psy_rd, p->analyse.f_psy_trellis );
-    #if MIXED_REFS
+#if MIXED_REFS
     s += sprintf( s, " mixed_ref=%d", p->analyse.b_mixed_references );
-    #endif
+#endif
     s += sprintf( s, " me_range=%d", p->analyse.i_me_range );
     s += sprintf( s, " chroma_me=%d", p->analyse.b_chroma_me );
+#if TRELLIS
     s += sprintf( s, " trellis=%d", p->analyse.i_trellis );
+#endif
     s += sprintf( s, " 8x8dct=%d", p->analyse.b_transform_8x8 );
     s += sprintf( s, " cqm=%d", p->i_cqm_preset );
     s += sprintf( s, " deadzone=%d,%d", p->analyse.i_luma_deadzone[0], p->analyse.i_luma_deadzone[1] );

@@ -75,6 +75,7 @@ void x264_cabac_block_residual_rd_c( x264_t *h, x264_cabac_t *cb, int ctx_block_
 #define x264_quant_luma_dc_trellis x264_template(quant_luma_dc_trellis)
 int x264_quant_luma_dc_trellis( x264_t *h, dctcoef *dct, int i_quant_cat, int i_qp,
                                 int ctx_block_cat, int b_intra, int idx );
+#if TRELLIS
 #define x264_quant_chroma_dc_trellis x264_template(quant_chroma_dc_trellis)
 int x264_quant_chroma_dc_trellis( x264_t *h, dctcoef *dct, int i_qp, int b_intra, int idx );
 #define x264_quant_4x4_trellis x264_template(quant_4x4_trellis)
@@ -83,6 +84,7 @@ int x264_quant_4x4_trellis( x264_t *h, dctcoef *dct, int i_quant_cat,
 #define x264_quant_8x8_trellis x264_template(quant_8x8_trellis)
 int x264_quant_8x8_trellis( x264_t *h, dctcoef *dct, int i_quant_cat,
                              int i_qp, int ctx_block_cat, int b_intra, int b_chroma, int idx );
+#endif
 
 #define x264_noise_reduction_update x264_template(noise_reduction_update)
 void x264_noise_reduction_update( x264_t *h );
@@ -92,9 +94,11 @@ static ALWAYS_INLINE int x264_quant_4x4( x264_t *h, dctcoef dct[16], int i_qp, i
     int i_quant_cat = b_intra ? (p?CQM_4IC:CQM_4IY) : (p?CQM_4PC:CQM_4PY);
     if( h->mb.b_noise_reduction )
         h->quantf.denoise_dct( dct, h->nr_residual_sum[0+!!p*2], h->nr_offset[0+!!p*2], 16 );
+#if TRELLIS
     if( h->mb.b_trellis )
         return x264_quant_4x4_trellis( h, dct, i_quant_cat, i_qp, ctx_block_cat, b_intra, !!p, idx+p*16 );
     else
+#endif
         return h->quantf.quant_4x4( dct, h->quant4_mf[i_quant_cat][i_qp], h->quant4_bias[i_quant_cat][i_qp] );
 }
 
@@ -103,9 +107,11 @@ static ALWAYS_INLINE int x264_quant_8x8( x264_t *h, dctcoef dct[64], int i_qp, i
     int i_quant_cat = b_intra ? (p?CQM_8IC:CQM_8IY) : (p?CQM_8PC:CQM_8PY);
     if( h->mb.b_noise_reduction )
         h->quantf.denoise_dct( dct, h->nr_residual_sum[1+!!p*2], h->nr_offset[1+!!p*2], 64 );
+#if TRELLIS
     if( h->mb.b_trellis )
         return x264_quant_8x8_trellis( h, dct, i_quant_cat, i_qp, ctx_block_cat, b_intra, !!p, idx+p*4 );
     else
+#endif
         return h->quantf.quant_8x8( dct, h->quant8_mf[i_quant_cat][i_qp], h->quant8_bias[i_quant_cat][i_qp] );
 }
 

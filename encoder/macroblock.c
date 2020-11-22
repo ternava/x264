@@ -171,6 +171,7 @@ static void mb_encode_i16x16( x264_t *h, int p, int i_qp )
         dct4x4[idx][0] = 0;
     }
 
+#if TRELLIS
     if( h->mb.b_trellis )
     {
         for( int idx = 0; idx < 16; idx++ )
@@ -185,6 +186,7 @@ static void mb_encode_i16x16( x264_t *h, int p, int i_qp )
     }
     else
     {
+#endif
         for( int i8x8 = 0; i8x8 < 4; i8x8++ )
         {
             nz = h->quantf.quant_4x4x4( &dct4x4[i8x8*4], h->quant4_mf[i_quant_cat][i_qp], h->quant4_bias[i_quant_cat][i_qp] );
@@ -200,7 +202,9 @@ static void mb_encode_i16x16( x264_t *h, int p, int i_qp )
                 }
             }
         }
+#if TRELLIS
     }
+#endif
 
     /* Writing the 16 CBFs in an i16x16 block is quite costly, so decimation can save many bits. */
     /* More useful with CAVLC, but still useful with CABAC. */
@@ -213,9 +217,11 @@ static void mb_encode_i16x16( x264_t *h, int p, int i_qp )
         h->mb.i_cbp_luma |= block_cbp;
 
     h->dctf.dct4x4dc( dct_dc4x4 );
+#if TRELLIS
     if( h->mb.b_trellis )
         nz = x264_quant_luma_dc_trellis( h, dct_dc4x4, i_quant_cat, i_qp, ctx_cat_plane[DCT_LUMA_DC][p], 1, LUMA_DC+p );
     else
+#endif
         nz = h->quantf.quant_4x4_dc( dct_dc4x4, h->quant4_mf[i_quant_cat][i_qp][0]>>1, h->quant4_bias[i_quant_cat][i_qp][0]<<1 );
 
     h->mb.cache.non_zero_count[x264_scan8[LUMA_DC+p]] = nz;
@@ -280,7 +286,11 @@ static ALWAYS_INLINE void mb_encode_chroma_internal( x264_t *h, int b_inter, int
     /* Early termination: check variance of chroma residual before encoding.
      * Don't bother trying early termination at low QPs.
      * Values are experimentally derived. */
-    if( b_decimate && i_qp >= (h->mb.b_trellis ? 12 : 18) && !h->mb.b_noise_reduction )
+    if( b_decimate && 
+#if TRELLIS
+    i_qp >= (h->mb.b_trellis ? 12 : 18) &&
+#endif
+     !h->mb.b_noise_reduction )
     {
         int thresh = chroma422 ? (x264_lambda2_tab[i_qp] + 16) >> 5 : (x264_lambda2_tab[i_qp] + 32) >> 6;
         ALIGNED_ARRAY_8( int, ssd,[2] );
@@ -303,16 +313,19 @@ static ALWAYS_INLINE void mb_encode_chroma_internal( x264_t *h, int b_inter, int
                         h->dctf.sub8x16_dct_dc( dct_dc, p_src, p_dst );
                     else
                         h->dctf.sub8x8_dct_dc( dct_dc, p_src, p_dst );
-
+#if TRELLIS
                     if( h->mb.b_trellis )
                         nz_dc = x264_quant_chroma_dc_trellis( h, dct_dc, i_qp+3*chroma422, !b_inter, CHROMA_DC+ch );
                     else
                     {
+#endif
                         nz_dc = 0;
                         for( int i = 0; i <= chroma422; i++ )
                             nz_dc |= h->quantf.quant_2x2_dc( &dct_dc[4*i], h->quant4_mf[CQM_4IC+b_inter][i_qp+3*chroma422][0] >> 1,
                                                              h->quant4_bias[CQM_4IC+b_inter][i_qp+3*chroma422][0] << 1 );
+#if TRELLIS
                     }
+#endif
 
                     if( nz_dc )
                     {
@@ -381,6 +394,7 @@ static ALWAYS_INLINE void mb_encode_chroma_internal( x264_t *h, int b_inter, int
         /* calculate dct coeffs */
         for( int i8x8 = 0; i8x8 < (chroma422?2:1); i8x8++ )
         {
+#if TRELLIS
             if( h->mb.b_trellis )
             {
                 for( int i4x4 = 0; i4x4 < 4; i4x4++ )
@@ -399,6 +413,7 @@ static ALWAYS_INLINE void mb_encode_chroma_internal( x264_t *h, int b_inter, int
             }
             else
             {
+#endif
                 nz = h->quantf.quant_4x4x4( &dct4x4[i8x8*4], h->quant4_mf[CQM_4IC+b_inter][i_qp],
                                             h->quant4_bias[CQM_4IC+b_inter][i_qp] );
                 nz_ac |= nz;
@@ -414,17 +429,23 @@ static ALWAYS_INLINE void mb_encode_chroma_internal( x264_t *h, int b_inter, int
                     h->mb.cache.non_zero_count[x264_scan8[idx]] = 1;
                 }
             }
+#if TRELLIS
         }
+#endif
 
+#if TRELLIS
         if( h->mb.b_trellis )
             nz_dc = x264_quant_chroma_dc_trellis( h, dct_dc, i_qp+3*chroma422, !b_inter, CHROMA_DC+ch );
         else
         {
+#endif
             nz_dc = 0;
             for( int i = 0; i <= chroma422; i++ )
                 nz_dc |= h->quantf.quant_2x2_dc( &dct_dc[4*i], h->quant4_mf[CQM_4IC+b_inter][i_qp+3*chroma422][0] >> 1,
                                                  h->quant4_bias[CQM_4IC+b_inter][i_qp+3*chroma422][0] << 1 );
+#if TRELLIS
         }
+#endif
 
         h->mb.cache.non_zero_count[x264_scan8[CHROMA_DC+ch]] = nz_dc;
 
@@ -801,7 +822,11 @@ static ALWAYS_INLINE void macroblock_encode_internal( x264_t *h, int plane_count
         else if( h->mb.b_transform_8x8 )
         {
             ALIGNED_ARRAY_64( dctcoef, dct8x8,[4],[64] );
-            b_decimate &= !h->mb.b_trellis || !h->param.b_cabac; // 8x8 trellis is inherently optimal decimation for CABAC
+            b_decimate &= 
+#if TRELLIS
+            !h->mb.b_trellis || 
+#endif
+            !h->param.b_cabac; // 8x8 trellis is inherently optimal decimation for CABAC
 
             for( int p = 0; p < plane_count; p++, i_qp = h->mb.i_chroma_qp )
             {
@@ -863,6 +888,7 @@ static ALWAYS_INLINE void macroblock_encode_internal( x264_t *h, int plane_count
                 {
                     int i_decimate_8x8 = b_decimate ? 0 : 6;
                     int nnz8x8 = 0;
+#if TRELLIS
                     if( h->mb.b_trellis )
                     {
                         for( int i4x4 = 0; i4x4 < 4; i4x4++ )
@@ -881,6 +907,7 @@ static ALWAYS_INLINE void macroblock_encode_internal( x264_t *h, int plane_count
                     }
                     else
                     {
+#endif
                         nnz8x8 = nz = h->quantf.quant_4x4x4( &dct4x4[i8x8*4], h->quant4_mf[quant_cat][i_qp], h->quant4_bias[quant_cat][i_qp] );
                         if( nz )
                         {
@@ -893,7 +920,9 @@ static ALWAYS_INLINE void macroblock_encode_internal( x264_t *h, int plane_count
                                 h->mb.cache.non_zero_count[x264_scan8[p*16+idx]] = 1;
                             }
                         }
+#if TRELLIS
                     }
+#endif
                     if( nnz8x8 )
                     {
                         i_decimate_mb += i_decimate_8x8;
@@ -1251,7 +1280,11 @@ static ALWAYS_INLINE void macroblock_encode_p8x8_internal( x264_t *h, int i8, in
                 {
                     h->zigzagf.scan_8x8( h->dct.luma8x8[4*p+i8], dct8x8 );
 
-                    if( b_decimate && !h->mb.b_trellis )
+                    if( b_decimate
+#if TRELLIS
+                    && !h->mb.b_trellis 
+#endif
+                    )
                         nnz8x8 = 4 <= h->quantf.decimate_score64( h->dct.luma8x8[4*p+i8] );
 
                     if( nnz8x8 )
@@ -1286,6 +1319,7 @@ static ALWAYS_INLINE void macroblock_encode_p8x8_internal( x264_t *h, int i8, in
                     for( int idx = 0; idx < 4; idx++ )
                         h->quantf.denoise_dct( dct4x4[idx], h->nr_residual_sum[0+!!p*2], h->nr_offset[0+!!p*2], 16 );
 
+#if TRELLIS
                 if( h->mb.b_trellis )
                 {
                     for( int i4x4 = 0; i4x4 < 4; i4x4++ )
@@ -1303,6 +1337,7 @@ static ALWAYS_INLINE void macroblock_encode_p8x8_internal( x264_t *h, int i8, in
                 }
                 else
                 {
+#endif
                     nnz8x8 = nz = h->quantf.quant_4x4x4( dct4x4, h->quant4_mf[quant_cat][i_qp], h->quant4_bias[quant_cat][i_qp] );
                     if( nz )
                     {
@@ -1315,7 +1350,9 @@ static ALWAYS_INLINE void macroblock_encode_p8x8_internal( x264_t *h, int i8, in
                             h->mb.cache.non_zero_count[x264_scan8[p*16+i8*4+i4x4]] = 1;
                         }
                     }
+#if TRELLIS
                 }
+#endif
                 if( nnz8x8 )
                 {
                     /* decimate this 8x8 block */
@@ -1347,9 +1384,11 @@ static ALWAYS_INLINE void macroblock_encode_p8x8_internal( x264_t *h, int i8, in
                         h->quantf.denoise_dct( dct4x4[i4x4], h->nr_residual_sum[2], h->nr_offset[2], 16 );
                     dct4x4[i4x4][0] = 0;
 
+#if TRELLIS
                     if( h->mb.b_trellis )
                         nz = x264_quant_4x4_trellis( h, dct4x4[i4x4], CQM_4PC, i_qp, DCT_CHROMA_AC, 0, 1, 0 );
                     else
+#endif
                         nz = h->quantf.quant_4x4( dct4x4[i4x4], h->quant4_mf[CQM_4PC][i_qp], h->quant4_bias[CQM_4PC][i_qp] );
 
                     int offset = chroma422 ? ((5*i8) & 0x09) + 2*i4x4 : i8;

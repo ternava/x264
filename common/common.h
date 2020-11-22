@@ -461,7 +461,9 @@ struct x264_t
         int     i_me_method;
         int     i_subpel_refine;
         int     b_chroma_me;
+#if TRELLIS
         int     b_trellis;
+#endif
         int     b_noise_reduction;
         int     b_dct_decimate;
         int     i_psy_rd; /* Psy RD strength--fixed point value*/

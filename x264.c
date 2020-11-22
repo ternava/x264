@@ -851,10 +851,12 @@ static void help( x264_param_t *defaults, int longhelp )
     H2( "      --no-mixed-refs         Don't decide references on a per partition basis\n" );
     H2( "      --no-chroma-me          Ignore chroma in motion estimation\n" );
     H1( "      --no-8x8dct             Disable adaptive spatial transform size\n" );
+#if TRELLIS
     H1( "  -t, --trellis <integer>     Trellis RD quantization. [%d]\n"
         "                                  - 0: disabled\n"
         "                                  - 1: enabled only on the final encode of a MB\n"
-        "                                  - 2: enabled on all mode decisions\n", defaults->analyse.i_trellis );
+        "                                  - 2: enabled on all mode decisions\n", defaults->analyse.i_trellis);
+#endif
     H2( "      --no-fast-pskip         Disables early SKIP detection on P-frames\n" );
     H2( "      --no-dct-decimate       Disables coefficient thresholding on P-frames\n" );
     H1( "      --nr <integer>          Noise reduction [%d]\n", defaults->analyse.i_noise_reduction );
@@ -1117,7 +1119,9 @@ static struct option long_options[] =
     { "no-chroma-me",      no_argument, NULL, 0 },
     { "8x8dct",            no_argument, NULL, '8' },
     { "no-8x8dct",         no_argument, NULL, 0 },
+#if TRELLIS
     { "trellis",     required_argument, NULL, 't' },
+#endif
     { "fast-pskip",        no_argument, NULL, 0 },
     { "no-fast-pskip",     no_argument, NULL, 0 },
     { "no-dct-decimate",   no_argument, NULL, 0 },

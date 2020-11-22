@@ -258,6 +258,7 @@ static void mb_analyse_init_qp( x264_t *h, x264_mb_analysis_t *a, int qp )
     a->i_lambda = x264_lambda_tab[qp];
     a->i_lambda2 = x264_lambda2_tab[qp];
 
+#if TRELLIS
     h->mb.b_trellis = h->param.analyse.i_trellis > 1 && a->i_mbrd;
     if( h->param.analyse.i_trellis )
     {
@@ -266,6 +267,7 @@ static void mb_analyse_init_qp( x264_t *h, x264_mb_analysis_t *a, int qp )
         h->mb.i_trellis_lambda2[1][0] = x264_trellis_lambda2_tab[0][effective_chroma_qp];
         h->mb.i_trellis_lambda2[1][1] = x264_trellis_lambda2_tab[1][effective_chroma_qp];
     }
+#endif
     h->mb.i_psy_rd_lambda = a->i_lambda;
     /* Adjusting chroma lambda based on QP offset hurts PSNR but improves visual quality. */
     int chroma_offset_idx = X264_MIN( qp-effective_chroma_qp+12, MAX_CHROMA_LAMBDA_OFFSET );
@@ -322,7 +324,10 @@ static void mb_analyse_init( x264_t *h, x264_mb_analysis_t *a, int qp )
     h->mb.i_skip_intra =
         h->mb.b_lossless ? 0 :
         a->i_mbrd ? 2 :
-        !h->param.analyse.i_trellis && !h->param.analyse.i_noise_reduction;
+#if TRELLIS
+        !h->param.analyse.i_trellis && 
+#endif
+        !h->param.analyse.i_noise_reduction;
 
     /* II: Inter part P/B frame */
     if( h->sh.i_type != SLICE_TYPE_I )
@@ -569,7 +574,11 @@ static inline void psy_trellis_init( x264_t *h, int do_both_dct )
 /* Reset fenc satd scores cache for psy RD */
 static inline void mb_init_fenc_cache( x264_t *h, int b_satd )
 {
-    if( h->param.analyse.i_trellis == 2 && h->mb.i_psy_trellis )
+    if( 
+#if TRELLIS
+        h->param.analyse.i_trellis == 2 && 
+#endif
+        h->mb.i_psy_trellis )
         psy_trellis_init( h, h->param.analyse.b_transform_8x8 );
     if( !h->mb.i_psy_rd )
         return;
@@ -3728,12 +3737,22 @@ skip_analysis:
     if( analysis.i_mbrd == 3 && !IS_SKIP(h->mb.i_type) )
         mb_analyse_qp_rd( h, &analysis );
 
+#if TRELLIS
     h->mb.b_trellis = h->param.analyse.i_trellis;
+#endif
     h->mb.b_noise_reduction = h->mb.b_noise_reduction || (!!h->param.analyse.i_noise_reduction && !IS_INTRA( h->mb.i_type ));
 
-    if( !IS_SKIP(h->mb.i_type) && h->mb.i_psy_trellis && h->param.analyse.i_trellis == 1 )
+    if( !IS_SKIP(h->mb.i_type) && h->mb.i_psy_trellis 
+#if TRELLIS
+    && h->param.analyse.i_trellis == 1 
+#endif
+    )
         psy_trellis_init( h, 0 );
-    if( h->mb.b_trellis == 1 || h->mb.b_noise_reduction )
+    if( 
+#if TRELLIS
+        h->mb.b_trellis == 1 || 
+#endif
+        h->mb.b_noise_reduction )
         h->mb.i_skip_intra = 0;
 }
 

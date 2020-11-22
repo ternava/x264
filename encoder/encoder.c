@@ -885,7 +885,9 @@ static int validate_parameters( x264_t *h, int b_open )
         h->param.analyse.b_psnr = 0;
         h->param.analyse.b_ssim = 0;
         h->param.analyse.i_chroma_qp_offset = 0;
+#if TRELLIS
         h->param.analyse.i_trellis = 0;
+#endif
         h->param.analyse.b_fast_pskip = 0;
         h->param.analyse.i_noise_reduction = 0;
         h->param.analyse.b_psy = 0;
@@ -1121,7 +1123,9 @@ static int validate_parameters( x264_t *h, int b_open )
         h->param.analyse.inter &= ~X264_ANALYSE_I8x8;
         h->param.analyse.intra &= ~X264_ANALYSE_I8x8;
     }
+#if TRELLIS
     h->param.analyse.i_trellis = x264_clip3( h->param.analyse.i_trellis, 0, 2 );
+#endif
     h->param.rc.i_aq_mode = x264_clip3( h->param.rc.i_aq_mode, 0, 3 );
     h->param.rc.f_aq_strength = x264_clip3f( h->param.rc.f_aq_strength, 0, 3 );
     if( h->param.rc.f_aq_strength == 0 )
@@ -1164,7 +1168,9 @@ static int validate_parameters( x264_t *h, int b_open )
     h->param.analyse.f_psy_rd = x264_clip3f( h->param.analyse.f_psy_rd, 0, 10 );
     h->param.analyse.f_psy_trellis = x264_clip3f( h->param.analyse.f_psy_trellis, 0, 10 );
     h->mb.i_psy_rd = h->param.analyse.i_subpel_refine >= 6 ? FIX8( h->param.analyse.f_psy_rd ) : 0;
+#if TRELLIS
     h->mb.i_psy_trellis = h->param.analyse.i_trellis ? FIX8( h->param.analyse.f_psy_trellis / 4 ) : 0;
+#endif
     h->param.analyse.i_chroma_qp_offset = x264_clip3(h->param.analyse.i_chroma_qp_offset, -32, 32);
     /* In 4:4:4 mode, chroma gets twice as much resolution, so we can halve its quality. */
     if( b_open && i_csp >= X264_CSP_I444 && i_csp < X264_CSP_BGR && h->param.analyse.b_psy )
@@ -1184,7 +1190,12 @@ static int validate_parameters( x264_t *h, int b_open )
         h->param.rc.f_aq_strength = 0;
     }
     h->param.analyse.i_noise_reduction = x264_clip3( h->param.analyse.i_noise_reduction, 0, 1<<16 );
-    if( h->param.analyse.i_subpel_refine >= 10 && (h->param.analyse.i_trellis != 2 || !h->param.rc.i_aq_mode) )
+    if( h->param.analyse.i_subpel_refine >= 10 && (
+#if TRELLIS
+       h->param.analyse.i_trellis != 2 ||
+#endif
+       !h->param.rc.i_aq_mode)
+      )
         h->param.analyse.i_subpel_refine = 9;
 
     if( b_open )
@@ -1828,7 +1839,9 @@ static int encoder_try_reconfig( x264_t *h, x264_param_t *param, int *rc_reconfi
     /* We can't switch out of subme=0 during encoding. */
     if( h->param.analyse.i_subpel_refine )
         COPY( analyse.i_subpel_refine );
+#if TRELLIS
     COPY( analyse.i_trellis );
+#endif
     COPY( analyse.b_chroma_me );
     COPY( analyse.b_dct_decimate );
     COPY( analyse.b_fast_pskip );
