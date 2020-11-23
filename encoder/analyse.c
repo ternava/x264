@@ -323,7 +323,11 @@ static void mb_analyse_init( x264_t *h, x264_mb_analysis_t *a, int qp )
     /* non-RD PCM decision is inaccurate (as is psy-rd), so don't do it.
      * PCM cost can overflow with high lambda2, so cap it at COST_MAX. */
     uint64_t pcm_cost = ((uint64_t)X264_PCM_COST*a->i_lambda2 + 128) >> 8;
-    a->i_satd_pcm = !h->param.i_avcintra_class && !h->mb.i_psy_rd && a->i_mbrd && pcm_cost < COST_MAX ? pcm_cost : COST_MAX;
+    a->i_satd_pcm = !h->param.i_avcintra_class 
+#if PSY_RD    
+    && !h->mb.i_psy_rd 
+#endif
+    && a->i_mbrd && pcm_cost < COST_MAX ? pcm_cost : COST_MAX;
 
     a->b_fast_intra = 0;
     a->b_avoid_topright = 0;
@@ -586,8 +590,10 @@ static inline void mb_init_fenc_cache( x264_t *h, int b_satd )
 #endif
         h->mb.i_psy_trellis )
         psy_trellis_init( h, h->param.analyse.b_transform_8x8 );
+#if PSY_RD
     if( !h->mb.i_psy_rd )
         return;
+#endif
 
     M128( &h->mb.pic.fenc_hadamard_cache[0] ) = M128_ZERO;
     M128( &h->mb.pic.fenc_hadamard_cache[2] ) = M128_ZERO;
@@ -2453,7 +2459,11 @@ static void mb_analyse_inter_b16x8( x264_t *h, x264_mb_analysis_t *a, int i_best
         /* Early termination based on the current SATD score of partition[0]
            plus the estimated SATD score of partition[1] */
         if( a->b_early_terminate && (!i && i_part_cost + a->i_cost_est16x8[1] > i_best_satd
-            * (16 + (!!a->i_mbrd + !!h->mb.i_psy_rd))/16) )
+            * (16 + (!!a->i_mbrd 
+#if PSY_RD
+            + !!h->mb.i_psy_rd
+#endif          
+            ))/16) )
         {
             a->i_cost16x8bi = COST_MAX;
             return;
@@ -2546,7 +2556,11 @@ static void mb_analyse_inter_b8x16( x264_t *h, x264_mb_analysis_t *a, int i_best
         /* Early termination based on the current SATD score of partition[0]
            plus the estimated SATD score of partition[1] */
         if( a->b_early_terminate && (!i && i_part_cost + a->i_cost_est8x16[1] > i_best_satd
-            * (16 + (!!a->i_mbrd + !!h->mb.i_psy_rd))/16) )
+            * (16 + (!!a->i_mbrd 
+#if PSY_RD
+            + !!h->mb.i_psy_rd
+#endif
+            ))/16) )
         {
             a->i_cost8x16bi = COST_MAX;
             return;
@@ -2639,7 +2653,11 @@ static void mb_analyse_p_rd( x264_t *h, x264_mb_analysis_t *a, int i_satd )
 
 static void mb_analyse_b_rd( x264_t *h, x264_mb_analysis_t *a, int i_satd_inter )
 {
-    int thresh = a->b_early_terminate ? i_satd_inter * (17 + (!!h->mb.i_psy_rd))/16 + 1 : COST_MAX;
+    int thresh = a->b_early_terminate ? i_satd_inter * (17 
+#if PSY_RD
+    + (!!h->mb.i_psy_rd)
+#endif
+    )/16 + 1 : COST_MAX;
 
     if( a->b_direct_available && a->i_rd16x16direct == COST_MAX )
     {
@@ -2841,11 +2859,13 @@ static inline void mb_analyse_qp_rd( x264_t *h, x264_mb_analysis_t *a )
          * With psy-RD, allow 1 failure when moving quant away from previous quant,
          * allow 2 failures when moving quant towards previous quant.
          * Psy-RD generally seems to result in more chaotic RD score-vs-quantizer curves. */
+#if PSY_RD     
         int threshold = (!!h->mb.i_psy_rd);
         /* Raise the threshold for failures if we're moving towards the last QP. */
         if( ( h->mb.i_last_qp < orig_qp && direction == -1 ) ||
             ( h->mb.i_last_qp > orig_qp && direction ==  1 ) )
             threshold++;
+#endif
         h->mb.i_qp = orig_qp;
         failures = 0;
         prevcost = origcost;
@@ -2861,7 +2881,11 @@ static inline void mb_analyse_qp_rd( x264_t *h, x264_mb_analysis_t *a )
         {
             if( !origcbp )
             {
-                h->mb.i_qp = X264_MAX( h->mb.i_qp - threshold - 1, SPEC_QP( h->param.rc.i_qp_min ) );
+                h->mb.i_qp = X264_MAX( h->mb.i_qp - 
+#if PSY_RD                
+                threshold -
+#endif                
+                 1, SPEC_QP( h->param.rc.i_qp_min ) );
                 h->mb.i_chroma_qp = h->chroma_qp_table[h->mb.i_qp];
                 already_checked_cost = rd_cost_mb( h, a->i_lambda2 );
                 if( !h->mb.cbp[h->mb.i_mb_xy] )
@@ -2899,8 +2923,10 @@ static inline void mb_analyse_qp_rd( x264_t *h, x264_mb_analysis_t *a )
                 failures++;
             prevcost = cost;
 
+#if PSY_RD
             if( failures > threshold )
                 break;
+#endif
             if( direction == 1 && !h->mb.cbp[h->mb.i_mb_xy] )
                 break;
             h->mb.i_qp += direction;

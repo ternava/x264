@@ -435,11 +435,15 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
                          | X264_ANALYSE_PSUB16x16 | X264_ANALYSE_BSUB16x16;
     param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_SPATIAL;
     param->analyse.i_me_method = X264_ME_HEX;
+#if PSY_RD
     param->analyse.f_psy_rd = 1.0;
+#endif
 #if PSY
     param->analyse.b_psy = 1;
 #endif
+#if PSY_RD
     param->analyse.f_psy_trellis = 0;
+#endif
     param->analyse.i_me_range = 16;
     param->analyse.i_subpel_refine = 7;
 #if MIXED_REFS
@@ -644,7 +648,9 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
             if( psy_tuning_used++ ) goto psy_failure;
             param->i_deblocking_filter_alphac0 = -1;
             param->i_deblocking_filter_beta = -1;
+#if PSY_RD
             param->analyse.f_psy_trellis = 0.15;
+#endif
         }
         else if( len == 9 && !strncasecmp( tune, "animation", 9 ) )
         {
@@ -652,7 +658,9 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
             param->i_frame_reference = param->i_frame_reference > 1 ? param->i_frame_reference*2 : 1;
             param->i_deblocking_filter_alphac0 = 1;
             param->i_deblocking_filter_beta = 1;
+#if PSY_RD
             param->analyse.f_psy_rd = 0.4;
+#endif
             param->rc.f_aq_strength = 0.6;
             param->i_bframe += 2;
         }
@@ -661,7 +669,9 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
             if( psy_tuning_used++ ) goto psy_failure;
             param->i_deblocking_filter_alphac0 = -2;
             param->i_deblocking_filter_beta = -2;
+#if PSY_RD
             param->analyse.f_psy_trellis = 0.25;
+#endif
             param->analyse.b_dct_decimate = 0;
             param->rc.f_pb_factor = 1.1;
             param->rc.f_ip_factor = 1.1;
@@ -675,8 +685,10 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
             if( psy_tuning_used++ ) goto psy_failure;
             param->i_deblocking_filter_alphac0 = -3;
             param->i_deblocking_filter_beta = -3;
+#if PSY_RD
             param->analyse.f_psy_rd = 2.0;
             param->analyse.f_psy_trellis = 0.7;
+#endif
             param->rc.f_aq_strength = 1.2;
         }
         else if( len == 4 && !strncasecmp( tune, "psnr", 4 ) )
@@ -717,7 +729,9 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
             param->i_frame_reference = param->i_frame_reference > 1 ? param->i_frame_reference*2 : 1;
             param->i_deblocking_filter_alphac0 = -1;
             param->i_deblocking_filter_beta = -1;
+#if PSY_RD
             param->analyse.f_psy_trellis = 0.2;
+#endif
             param->rc.f_aq_strength = 1.3;
             if( param->analyse.inter & X264_ANALYSE_PSUB16x16 )
                 param->analyse.inter |= X264_ANALYSE_PSUB8x8;
@@ -1267,6 +1281,7 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
         p->analyse.i_mv_range_thread = atoi(value);
     OPT2("subme", "subq")
         p->analyse.i_subpel_refine = atoi(value);
+#if PSY_RD
     OPT("psy-rd")
     {
         if( 2 == sscanf( value, "%f:%f", &p->analyse.f_psy_rd, &p->analyse.f_psy_trellis ) ||
@@ -1283,6 +1298,7 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
             p->analyse.f_psy_trellis = 0;
         }
     }
+#endif
 #if PSY
     OPT("psy")
         p->analyse.b_psy = atobool(value);

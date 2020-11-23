@@ -125,7 +125,11 @@ static inline int ssd_plane( x264_t *h, int size, int p, int x, int y )
     int satd = 0;
     pixel *fdec = h->mb.pic.p_fdec[p] + x + y*FDEC_STRIDE;
     pixel *fenc = h->mb.pic.p_fenc[p] + x + y*FENC_STRIDE;
-    if( p == 0 && h->mb.i_psy_rd )
+    if( p == 0 
+#if PSY_RD
+    && h->mb.i_psy_rd 
+#endif
+    )
     {
         /* If the plane is smaller than 8x8, we can't do an SA8D; this probably isn't a big problem. */
         if( size <= PIXEL_8x8 )
@@ -141,7 +145,11 @@ static inline int ssd_plane( x264_t *h, int size, int p, int x, int y )
             int dc = h->pixf.sad[size]( fdec, FDEC_STRIDE, (pixel*)x264_zero, 0 ) >> 1;
             satd = abs(h->pixf.satd[size]( fdec, FDEC_STRIDE, (pixel*)x264_zero, 0 ) - dc - cached_satd( h, size, x, y ));
         }
-        satd = (satd * h->mb.i_psy_rd * h->mb.i_psy_rd_lambda + 128) >> 8;
+        satd = (satd * 
+#if PSY_RD
+        h->mb.i_psy_rd *
+#endif
+         h->mb.i_psy_rd_lambda + 128) >> 8;
     }
     return h->pixf.ssd[size](fenc, FENC_STRIDE, fdec, FDEC_STRIDE) + satd;
 }

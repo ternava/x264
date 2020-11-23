@@ -1172,9 +1172,11 @@ static int validate_parameters( x264_t *h, int b_open )
         h->param.analyse.f_psy_trellis = 0;
     }
 #endif
+#if PSY_RD
     h->param.analyse.f_psy_rd = x264_clip3f( h->param.analyse.f_psy_rd, 0, 10 );
     h->param.analyse.f_psy_trellis = x264_clip3f( h->param.analyse.f_psy_trellis, 0, 10 );
     h->mb.i_psy_rd = h->param.analyse.i_subpel_refine >= 6 ? FIX8( h->param.analyse.f_psy_rd ) : 0;
+#endif
 #if TRELLIS
     h->mb.i_psy_trellis = h->param.analyse.i_trellis ? FIX8( h->param.analyse.f_psy_trellis / 4 ) : 0;
 #endif
@@ -1188,11 +1190,23 @@ static int validate_parameters( x264_t *h, int b_open )
         h->param.analyse.i_chroma_qp_offset += 6;
     /* Psy RDO increases overall quantizers to improve the quality of luma--this indirectly hurts chroma quality */
     /* so we lower the chroma QP offset to compensate */
-    if( b_open && h->mb.i_psy_rd && !h->param.i_avcintra_class )
-        h->param.analyse.i_chroma_qp_offset -= h->param.analyse.f_psy_rd < 0.25 ? 1 : 2;
+    if( b_open 
+#if PSY_RD    
+    && h->mb.i_psy_rd 
+#endif    
+    && !h->param.i_avcintra_class )
+        h->param.analyse.i_chroma_qp_offset -= 
+#if PSY_RD
+        h->param.analyse.f_psy_rd < 0.25 ? 1 : 
+#endif
+        2;
     /* Psy trellis has a similar effect. */
     if( b_open && h->mb.i_psy_trellis && !h->param.i_avcintra_class )
-        h->param.analyse.i_chroma_qp_offset -= h->param.analyse.f_psy_trellis < 0.25 ? 1 : 2;
+        h->param.analyse.i_chroma_qp_offset -= 
+#if PSY_RD
+        h->param.analyse.f_psy_trellis < 0.25 ? 1 : 
+#endif
+        2;
     h->param.analyse.i_chroma_qp_offset = x264_clip3(h->param.analyse.i_chroma_qp_offset, -12, 12);
     /* MB-tree requires AQ to be on, even if the strength is zero. */
     if( !h->param.rc.i_aq_mode && h->param.rc.b_mb_tree )
@@ -1865,8 +1879,10 @@ static int encoder_try_reconfig( x264_t *h, x264_param_t *param, int *rc_reconfi
 #if MIXED_REFS
     COPY( analyse.b_mixed_references );
 #endif
+#if PSY_RD
     COPY( analyse.f_psy_rd );
     COPY( analyse.f_psy_trellis );
+#endif
     COPY( crop_rect );
     // can only twiddle these if they were enabled to begin with:
     if( h->param.analyse.i_me_method >= X264_ME_ESA || param->analyse.i_me_method < X264_ME_ESA )

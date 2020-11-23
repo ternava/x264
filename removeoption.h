@@ -7,6 +7,9 @@
 #ifndef PSY
 #define PSY 0
 #endif
+#ifndef PSY_RD
+#define PSY_RD 0
+#endif
 
 #ifndef UNKNOWN
 #define UNKNOWN 1

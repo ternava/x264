@@ -842,10 +842,12 @@ static void help( x264_param_t *defaults, int longhelp )
         "                                  - 10: QP-RD - requires trellis=2, aq-mode>0\n"
         "                                  - 11: Full RD: disable all early terminations\n" );
     else H1( "                                  decision quality: 1=fast, 11=best\n" );
+#if PSY_RD
     H1( "      --psy-rd <float:float>  Strength of psychovisual optimization [\"%.1f:%.1f\"]\n"
         "                                  #1: RD (requires subme>=6)\n"
         "                                  #2: Trellis (requires trellis, experimental)\n",
                                        defaults->analyse.f_psy_rd, defaults->analyse.f_psy_trellis );
+#endif
     H2( "      --no-psy                Disable all visual optimizations that worsen\n"
         "                              both PSNR and SSIM.\n" );
     H2( "      --no-mixed-refs         Don't decide references on a per partition basis\n" );
@@ -1109,7 +1111,9 @@ static struct option long_options[] =
     { "mvrange",     required_argument, NULL, 0 },
     { "mvrange-thread", required_argument, NULL, 0 },
     { "subme",       required_argument, NULL, 'm' },
+#if PSY_RD
     { "psy-rd",      required_argument, NULL, 0 },
+#endif
 #if PSY
     { "no-psy",            no_argument, NULL, 0 },
     { "psy",               no_argument, NULL, 0 },

@@ -466,7 +466,9 @@ struct x264_t
 #endif
         int     b_noise_reduction;
         int     b_dct_decimate;
+#if PSY_RD
         int     i_psy_rd; /* Psy RD strength--fixed point value*/
+#endif
         int     i_psy_trellis; /* Psy trellis strength--fixed point value*/
 
         int     b_interlaced;
