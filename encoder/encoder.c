@@ -890,7 +890,9 @@ static int validate_parameters( x264_t *h, int b_open )
 #endif
         h->param.analyse.b_fast_pskip = 0;
         h->param.analyse.i_noise_reduction = 0;
+#if PSY
         h->param.analyse.b_psy = 0;
+#endif
         h->param.i_bframe = 0;
         /* 8x8dct is not useful without RD in CAVLC lossless */
         if( !h->param.b_cabac && h->param.analyse.i_subpel_refine < 6 )
@@ -1141,12 +1143,15 @@ static int validate_parameters( x264_t *h, int b_open )
     {
         char *s = NULL;
 
+#if PSY
         if( h->param.analyse.b_psy )
         {
             s = h->param.analyse.b_psnr ? "psnr" : "ssim";
             x264_log( h, X264_LOG_WARNING, "--%s used with psy on: results will be invalid!\n", s );
         }
-        else if( !h->param.rc.i_aq_mode && h->param.analyse.b_ssim )
+        else
+#endif
+         if( !h->param.rc.i_aq_mode && h->param.analyse.b_ssim )
         {
             x264_log( h, X264_LOG_WARNING, "--ssim used with AQ off: results will be invalid!\n" );
             s = "ssim";
@@ -1160,11 +1165,13 @@ static int validate_parameters( x264_t *h, int b_open )
             x264_log( h, X264_LOG_WARNING, "--tune %s should be used if attempting to benchmark %s!\n", s, s );
     }
 
+#if PSY
     if( !h->param.analyse.b_psy )
     {
         h->param.analyse.f_psy_rd = 0;
         h->param.analyse.f_psy_trellis = 0;
     }
+#endif
     h->param.analyse.f_psy_rd = x264_clip3f( h->param.analyse.f_psy_rd, 0, 10 );
     h->param.analyse.f_psy_trellis = x264_clip3f( h->param.analyse.f_psy_trellis, 0, 10 );
     h->mb.i_psy_rd = h->param.analyse.i_subpel_refine >= 6 ? FIX8( h->param.analyse.f_psy_rd ) : 0;
@@ -1173,7 +1180,11 @@ static int validate_parameters( x264_t *h, int b_open )
 #endif
     h->param.analyse.i_chroma_qp_offset = x264_clip3(h->param.analyse.i_chroma_qp_offset, -32, 32);
     /* In 4:4:4 mode, chroma gets twice as much resolution, so we can halve its quality. */
-    if( b_open && i_csp >= X264_CSP_I444 && i_csp < X264_CSP_BGR && h->param.analyse.b_psy )
+    if( b_open && i_csp >= X264_CSP_I444 && i_csp < X264_CSP_BGR
+#if PSY
+    && h->param.analyse.b_psy
+#endif
+     )
         h->param.analyse.i_chroma_qp_offset += 6;
     /* Psy RDO increases overall quantizers to improve the quality of luma--this indirectly hurts chroma quality */
     /* so we lower the chroma QP offset to compensate */
@@ -1272,7 +1283,11 @@ static int validate_parameters( x264_t *h, int b_open )
         }
     }
 
-    if( !h->param.analyse.i_weighted_pred && h->param.rc.b_mb_tree && h->param.analyse.b_psy )
+    if( !h->param.analyse.i_weighted_pred && h->param.rc.b_mb_tree
+#if PSY
+     && h->param.analyse.b_psy 
+#endif
+     )
         h->param.analyse.i_weighted_pred = X264_WEIGHTP_FAKE;
 
     if( h->i_thread_frames > 1 )
@@ -1355,7 +1370,9 @@ static int validate_parameters( x264_t *h, int b_open )
 #endif
     BOOLIFY( analyse.b_fast_pskip );
     BOOLIFY( analyse.b_dct_decimate );
+#if PSY
     BOOLIFY( analyse.b_psy );
+#endif
     BOOLIFY( analyse.b_psnr );
     BOOLIFY( analyse.b_ssim );
     BOOLIFY( rc.b_stat_write );

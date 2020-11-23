@@ -165,6 +165,7 @@ const int x264_trellis_lambda2_tab[2][QP_MAX_MAX+1] =
     }
 };
 
+#if PSY
 const uint16_t x264_chroma_lambda2_offset_tab[MAX_CHROMA_LAMBDA_OFFSET+1] =
 {
        16,    20,    25,    32,    40,    50,
@@ -175,6 +176,7 @@ const uint16_t x264_chroma_lambda2_offset_tab[MAX_CHROMA_LAMBDA_OFFSET+1] =
     16384, 20642, 26007, 32768, 41285, 52015,
     65535
 };
+#endif
 
 /*****************************************************************************
  * MC

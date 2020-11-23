@@ -1110,8 +1110,10 @@ static struct option long_options[] =
     { "mvrange-thread", required_argument, NULL, 0 },
     { "subme",       required_argument, NULL, 'm' },
     { "psy-rd",      required_argument, NULL, 0 },
+#if PSY
     { "no-psy",            no_argument, NULL, 0 },
     { "psy",               no_argument, NULL, 0 },
+#endif
 #if MIXED_REFS
     { "mixed-refs",        no_argument, NULL, 0 },
 #endif

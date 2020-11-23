@@ -1510,7 +1510,11 @@ void x264_slicetype_analyse( x264_t *h, int intra_minigop )
      * there will be significant visual artifacts if the frames just before
      * go down in quality due to being referenced less, despite it being
      * more RD-optimal. */
-    if( (h->param.analyse.b_psy && h->param.rc.b_mb_tree) || b_vbv_lookahead )
+    if( (
+#if PSY
+        h->param.analyse.b_psy &&
+#endif
+         h->param.rc.b_mb_tree) || b_vbv_lookahead )
         num_frames = framecnt;
     else if( h->param.b_open_gop && num_frames < framecnt )
         num_frames++;

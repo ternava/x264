@@ -4,3 +4,10 @@
 #ifndef TRELLIS
 #define TRELLIS 0
 #endif
+#ifndef PSY
+#define PSY 0
+#endif
+
+#ifndef UNKNOWN
+#define UNKNOWN 1
+#endif

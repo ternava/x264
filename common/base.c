@@ -436,7 +436,9 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
     param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_SPATIAL;
     param->analyse.i_me_method = X264_ME_HEX;
     param->analyse.f_psy_rd = 1.0;
+#if PSY
     param->analyse.b_psy = 1;
+#endif
     param->analyse.f_psy_trellis = 0;
     param->analyse.i_me_range = 16;
     param->analyse.i_subpel_refine = 7;
@@ -681,13 +683,17 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
         {
             if( psy_tuning_used++ ) goto psy_failure;
             param->rc.i_aq_mode = X264_AQ_NONE;
+#if PSY
             param->analyse.b_psy = 0;
+#endif
         }
         else if( len == 4 && !strncasecmp( tune, "ssim", 4 ) )
         {
             if( psy_tuning_used++ ) goto psy_failure;
             param->rc.i_aq_mode = X264_AQ_AUTOVARIANCE;
+#if PSY
             param->analyse.b_psy = 0;
+#endif
         }
         else if( len == 10 && !strncasecmp( tune, "fastdecode", 10 ) )
         {
@@ -1277,8 +1283,10 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
             p->analyse.f_psy_trellis = 0;
         }
     }
+#if PSY
     OPT("psy")
         p->analyse.b_psy = atobool(value);
+#endif
     OPT("chroma-me")
         p->analyse.b_chroma_me = atobool(value);
 #if MIXED_REFS
@@ -1446,9 +1454,11 @@ char *x264_param2string( x264_param_t *p, int b_res )
     s += sprintf( s, " analyse=%#x:%#x", p->analyse.intra, p->analyse.inter );
     s += sprintf( s, " me=%s", x264_motion_est_names[ p->analyse.i_me_method ] );
     s += sprintf( s, " subme=%d", p->analyse.i_subpel_refine );
+#if PSY
     s += sprintf( s, " psy=%d", p->analyse.b_psy );
     if( p->analyse.b_psy )
         s += sprintf( s, " psy_rd=%.2f:%.2f", p->analyse.f_psy_rd, p->analyse.f_psy_trellis );
+#endif
 #if MIXED_REFS
     s += sprintf( s, " mixed_ref=%d", p->analyse.b_mixed_references );
 #endif
