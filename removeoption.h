@@ -10,6 +10,9 @@
 #ifndef PSY_RD
 #define PSY_RD 0
 #endif
+#ifndef NR
+#define NR 0
+#endif
 
 #ifndef UNKNOWN
 #define UNKNOWN 1

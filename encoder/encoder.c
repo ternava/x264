@@ -889,7 +889,9 @@ static int validate_parameters( x264_t *h, int b_open )
         h->param.analyse.i_trellis = 0;
 #endif
         h->param.analyse.b_fast_pskip = 0;
+#if NR
         h->param.analyse.i_noise_reduction = 0;
+#endif
 #if PSY
         h->param.analyse.b_psy = 0;
 #endif
@@ -1214,7 +1216,9 @@ static int validate_parameters( x264_t *h, int b_open )
         h->param.rc.i_aq_mode = 1;
         h->param.rc.f_aq_strength = 0;
     }
+#if NR
     h->param.analyse.i_noise_reduction = x264_clip3( h->param.analyse.i_noise_reduction, 0, 1<<16 );
+#endif
     if( h->param.analyse.i_subpel_refine >= 10 && (
 #if TRELLIS
        h->param.analyse.i_trellis != 2 ||
@@ -1866,7 +1870,9 @@ static int encoder_try_reconfig( x264_t *h, x264_param_t *param, int *rc_reconfi
     /* Scratch buffer prevents me_range from being increased for esa/tesa */
     if( h->param.analyse.i_me_method < X264_ME_ESA || param->analyse.i_me_range < h->param.analyse.i_me_range )
         COPY( analyse.i_me_range );
+#if NR
     COPY( analyse.i_noise_reduction );
+#endif
     /* We can't switch out of subme=0 during encoding. */
     if( h->param.analyse.i_subpel_refine )
         COPY( analyse.i_subpel_refine );

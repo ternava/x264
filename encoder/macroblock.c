@@ -1191,8 +1191,11 @@ void x264_noise_reduction_update( x264_t *h )
         }
 
         for( int i = 0; i < size; i++ )
-            h->nr_offset[cat][i] =
-                ((uint64_t)h->param.analyse.i_noise_reduction * h->nr_count[cat]
+            h->nr_offset[cat][i] = (
+#if NR                
+                (uint64_t)h->param.analyse.i_noise_reduction *
+#endif                
+                 h->nr_count[cat]
                  + h->nr_residual_sum[cat][i]/2)
               / ((uint64_t)h->nr_residual_sum[cat][i] * weight[i]/256 + 1);
 

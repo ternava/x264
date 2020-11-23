@@ -861,7 +861,9 @@ static void help( x264_param_t *defaults, int longhelp )
 #endif
     H2( "      --no-fast-pskip         Disables early SKIP detection on P-frames\n" );
     H2( "      --no-dct-decimate       Disables coefficient thresholding on P-frames\n" );
+#if NR
     H1( "      --nr <integer>          Noise reduction [%d]\n", defaults->analyse.i_noise_reduction );
+#endif
     H2( "\n" );
     H2( "      --deadzone-inter <int>  Set the size of the inter luma quantization deadzone [%d]\n", defaults->analyse.i_luma_deadzone[0] );
     H2( "      --deadzone-intra <int>  Set the size of the intra luma quantization deadzone [%d]\n", defaults->analyse.i_luma_deadzone[1] );
@@ -1175,7 +1177,9 @@ static struct option long_options[] =
     { "dump-yuv",    required_argument, NULL, 0 },
     { "sps-id",      required_argument, NULL, 0 },
     { "aud",               no_argument, NULL, 0 },
+#if NR
     { "nr",          required_argument, NULL, 0 },
+#endif
     { "cqm",         required_argument, NULL, 0 },
     { "cqmfile",     required_argument, NULL, 0 },
     { "cqm4",        required_argument, NULL, 0 },

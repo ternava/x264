@@ -1321,8 +1321,10 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
         p->analyse.i_luma_deadzone[0] = atoi(value);
     OPT("deadzone-intra")
         p->analyse.i_luma_deadzone[1] = atoi(value);
+#if NR
     OPT("nr")
         p->analyse.i_noise_reduction = atoi(value);
+#endif
     OPT("bitrate")
     {
         p->rc.i_bitrate = atoi(value);
@@ -1501,7 +1503,9 @@ char *x264_param2string( x264_param_t *p, int b_res )
         s += sprintf( s, " slice_max_mbs=%d", p->i_slice_max_mbs );
     if( p->i_slice_min_mbs )
         s += sprintf( s, " slice_min_mbs=%d", p->i_slice_min_mbs );
+#if NR
     s += sprintf( s, " nr=%d", p->analyse.i_noise_reduction );
+#endif
     s += sprintf( s, " decimate=%d", p->analyse.b_dct_decimate );
     s += sprintf( s, " interlaced=%s", p->b_interlaced ? p->b_tff ? "tff" : "bff" : p->b_fake_interlaced ? "fake" : "0" );
     s += sprintf( s, " bluray_compat=%d", p->b_bluray_compat );

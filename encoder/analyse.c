@@ -331,14 +331,11 @@ static void mb_analyse_init( x264_t *h, x264_mb_analysis_t *a, int qp )
 
     a->b_fast_intra = 0;
     a->b_avoid_topright = 0;
+#if TRELLIS || NR
     h->mb.i_skip_intra =
         h->mb.b_lossless ? 0 :
-        a->i_mbrd ? 2 :
-#if TRELLIS
-        !h->param.analyse.i_trellis && 
+        a->i_mbrd ? 2 : !h->param.analyse.i_trellis && !h->param.analyse.i_noise_reduction;
 #endif
-        !h->param.analyse.i_noise_reduction;
-
     /* II: Inter part P/B frame */
     if( h->sh.i_type != SLICE_TYPE_I )
     {
@@ -3774,7 +3771,11 @@ skip_analysis:
 #if TRELLIS
     h->mb.b_trellis = h->param.analyse.i_trellis;
 #endif
-    h->mb.b_noise_reduction = h->mb.b_noise_reduction || (!!h->param.analyse.i_noise_reduction && !IS_INTRA( h->mb.i_type ));
+    h->mb.b_noise_reduction = h->mb.b_noise_reduction || (
+#if NR  
+        !!h->param.analyse.i_noise_reduction &&
+#endif
+         !IS_INTRA( h->mb.i_type ));
 
     if( !IS_SKIP(h->mb.i_type) && h->mb.i_psy_trellis 
 #if TRELLIS
