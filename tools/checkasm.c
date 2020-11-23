@@ -860,8 +860,10 @@ static int check_dct( uint32_t cpu_ref, uint32_t cpu_new )
     h->param.analyse.i_luma_deadzone[0] = 0;
     h->param.analyse.i_luma_deadzone[1] = 0;
     h->param.analyse.b_transform_8x8 = 1;
+#if CQM
     for( int i = 0; i < 6; i++ )
         h->sps->scaling_list[i] = x264_cqm_flat16;
+#endif
     x264_cqm_init( h );
     x264_quant_init( h, 0, &qf );
 
@@ -2037,15 +2039,19 @@ static int check_quant( uint32_t cpu_ref, uint32_t cpu_new )
     {
         if( i_cqm == 0 )
         {
+#if CQM
             for( int i = 0; i < 6; i++ )
                 h->sps->scaling_list[i] = x264_cqm_flat16;
             h->param.i_cqm_preset = h->sps->i_cqm_preset = X264_CQM_FLAT;
+#endif
         }
         else if( i_cqm == 1 )
         {
+#if CQM
             for( int i = 0; i < 6; i++ )
                 h->sps->scaling_list[i] = x264_cqm_jvt[i];
             h->param.i_cqm_preset = h->sps->i_cqm_preset = X264_CQM_JVT;
+#endif
         }
         else
         {

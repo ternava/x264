@@ -48,15 +48,21 @@ static void scaling_list_write( bs_t *s, x264_sps_t *sps, int idx )
     const uint8_t *def_list = (idx==CQM_4IC) ? sps->scaling_list[CQM_4IY]
                             : (idx==CQM_4PC) ? sps->scaling_list[CQM_4PY]
                             : (idx==CQM_8IC+4) ? sps->scaling_list[CQM_8IY+4]
-                            : (idx==CQM_8PC+4) ? sps->scaling_list[CQM_8PY+4]
-                            : x264_cqm_jvt[idx];
+                            : (idx==CQM_8PC+4)
+#if CQM 
+                            ? sps->scaling_list[CQM_8PY+4] 
+                            : x264_cqm_jvt[idx]
+#endif
+;
     if( !memcmp( list, def_list, len ) )
         bs_write1( s, 0 );   // scaling_list_present_flag
+#if CQM
     else if( !memcmp( list, x264_cqm_jvt[idx], len ) )
     {
         bs_write1( s, 1 );   // scaling_list_present_flag
         bs_write_se( s, -8 ); // use jvt list
     }
+#endif
     else
     {
         int run;
@@ -119,11 +125,16 @@ void x264_sps_init( x264_sps_t *sps, int i_id, x264_param_t *param )
         sps->i_profile_idc  = PROFILE_HIGH422;
     else if( BIT_DEPTH > 8 )
         sps->i_profile_idc  = PROFILE_HIGH10;
-    else if( param->analyse.b_transform_8x8 || param->i_cqm_preset != X264_CQM_FLAT || sps->i_chroma_format_idc == CHROMA_400 )
+    else if( param->analyse.b_transform_8x8
+#if CQM    
+            || param->i_cqm_preset != X264_CQM_FLAT
+#endif
+            || sps->i_chroma_format_idc == CHROMA_400 ) {
         sps->i_profile_idc  = PROFILE_HIGH;
-    else if( param->b_cabac || param->i_bframe > 0 || param->b_interlaced || param->b_fake_interlaced || param->analyse.i_weighted_pred > 0 )
+    }
+    else if( param->b_cabac || param->i_bframe > 0 || param->b_interlaced || param->b_fake_interlaced || param->analyse.i_weighted_pred > 0 ) {
         sps->i_profile_idc  = PROFILE_MAIN;
-    else
+    } else
         sps->i_profile_idc  = PROFILE_BASELINE;
 
     sps->b_constraint_set0  = sps->i_profile_idc == PROFILE_BASELINE;
@@ -267,6 +278,7 @@ void x264_sps_init_scaling_list( x264_sps_t *sps, x264_param_t *param )
 {
     switch( sps->i_cqm_preset )
     {
+#if CQM
     case X264_CQM_FLAT:
         for( int i = 0; i < 8; i++ )
             sps->scaling_list[i] = x264_cqm_flat16;
@@ -275,6 +287,7 @@ void x264_sps_init_scaling_list( x264_sps_t *sps, x264_param_t *param )
         for( int i = 0; i < 8; i++ )
             sps->scaling_list[i] = x264_cqm_jvt[i];
         break;
+#endif
     case X264_CQM_CUSTOM:
         /* match the transposed DCT & zigzag */
         transpose( param->cqm_4iy, 4 );
@@ -296,7 +309,9 @@ void x264_sps_init_scaling_list( x264_sps_t *sps, x264_param_t *param )
         for( int i = 0; i < 8; i++ )
             for( int j = 0; j < (i < 4 ? 16 : 64); j++ )
                 if( sps->scaling_list[i][j] == 0 )
+#if CQM
                     sps->scaling_list[i] = x264_cqm_jvt[i];
+#endif
         break;
     }
 }
@@ -524,7 +539,11 @@ void x264_pps_write( bs_t *s, x264_sps_t *sps, x264_pps_t *pps )
     bs_write1( s, pps->b_constrained_intra_pred );
     bs_write1( s, pps->b_redundant_pic_cnt );
 
-    int b_scaling_list = !sps->b_avcintra && sps->i_cqm_preset != X264_CQM_FLAT;
+    int b_scaling_list = !sps->b_avcintra 
+#if CQM    
+    && sps->i_cqm_preset != X264_CQM_FLAT
+#endif    
+    ;
     if( pps->b_transform_8x8_mode || b_scaling_list )
     {
         bs_write1( s, pps->b_transform_8x8_mode );

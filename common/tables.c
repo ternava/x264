@@ -226,6 +226,7 @@ const uint8_t x264_cqm_jvt8p[64] =
     22,24,25,27,28,30,32,33,
     24,25,27,28,30,32,33,35
 };
+#if CQM
 const uint8_t x264_cqm_flat16[64] =
 {
     16,16,16,16,16,16,16,16,
@@ -244,6 +245,7 @@ const uint8_t * const x264_cqm_jvt[8] =
     x264_cqm_jvt8i, x264_cqm_jvt8p,
     x264_cqm_jvt8i, x264_cqm_jvt8p
 };
+#endif
 
 // 1080i25_avci50, 1080p25_avci50
 const uint8_t x264_cqm_avci50_4ic[16] =

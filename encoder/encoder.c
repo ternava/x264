@@ -877,7 +877,9 @@ static int validate_parameters( x264_t *h, int b_open )
         && h->param.rc.i_qp_constant == 0 )
     {
         h->mb.b_lossless = 1;
+#if CQM
         h->param.i_cqm_preset = X264_CQM_FLAT;
+#endif
         h->param.psz_cqm_file = NULL;
         h->param.rc.i_rc_method = X264_RC_CQP;
         h->param.rc.f_ip_factor = 1;
@@ -1102,8 +1104,10 @@ static int validate_parameters( x264_t *h, int b_open )
 
     h->param.i_cabac_init_idc = x264_clip3( h->param.i_cabac_init_idc, 0, 2 );
 
+#if CQM
     if( h->param.i_cqm_preset < X264_CQM_FLAT || h->param.i_cqm_preset > X264_CQM_CUSTOM )
         h->param.i_cqm_preset = X264_CQM_FLAT;
+#endif
 
     if( h->param.analyse.i_me_method < X264_ME_DIA ||
         h->param.analyse.i_me_method > X264_ME_TESA )

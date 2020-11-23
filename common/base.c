@@ -466,7 +466,9 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
     param->analyse.b_psnr = 0;
     param->analyse.b_ssim = 0;
 
+#if CQM
     param->i_cqm_preset = X264_CQM_FLAT;
+#endif
     memset( param->cqm_4iy, 16, sizeof( param->cqm_4iy ) );
     memset( param->cqm_4py, 16, sizeof( param->cqm_4py ) );
     memset( param->cqm_4ic, 16, sizeof( param->cqm_4ic ) );
@@ -835,7 +837,9 @@ REALIGN_STACK int x264_param_apply_profile( x264_param_t *param, const char *pro
     {
         param->analyse.b_transform_8x8 = 0;
         param->b_cabac = 0;
+#if CQM
         param->i_cqm_preset = X264_CQM_FLAT;
+#endif
         param->psz_cqm_file = NULL;
         param->i_bframe = 0;
         param->analyse.i_weighted_pred = X264_WEIGHTP_NONE;
@@ -853,7 +857,9 @@ REALIGN_STACK int x264_param_apply_profile( x264_param_t *param, const char *pro
     else if( p == PROFILE_MAIN )
     {
         param->analyse.b_transform_8x8 = 0;
+#if CQM
         param->i_cqm_preset = X264_CQM_FLAT;
+#endif
         param->psz_cqm_file = NULL;
     }
     return 0;
@@ -1174,6 +1180,7 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
     }
     OPT("constrained-intra")
         p->b_constrained_intra = atobool(value);
+#if CQM
     OPT("cqm")
     {
         if( strstr( value, "flat" ) )
@@ -1183,6 +1190,7 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
         else
             CHECKED_ERROR_PARAM_STRDUP( p->psz_cqm_file, p, value );
     }
+#endif
     OPT("cqmfile")
         CHECKED_ERROR_PARAM_STRDUP( p->psz_cqm_file, p, value );
     OPT("cqm4")
@@ -1486,7 +1494,9 @@ char *x264_param2string( x264_param_t *p, int b_res )
     s += sprintf( s, " trellis=%d", p->analyse.i_trellis );
 #endif
     s += sprintf( s, " 8x8dct=%d", p->analyse.b_transform_8x8 );
+#if CQM
     s += sprintf( s, " cqm=%d", p->i_cqm_preset );
+#endif
     s += sprintf( s, " deadzone=%d,%d", p->analyse.i_luma_deadzone[0], p->analyse.i_luma_deadzone[1] );
     s += sprintf( s, " fast_pskip=%d", p->analyse.b_fast_pskip );
     s += sprintf( s, " chroma_qp_offset=%d", p->analyse.i_chroma_qp_offset );

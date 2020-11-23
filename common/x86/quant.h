@@ -86,18 +86,24 @@ void x264_dequant_4x4_sse2( dctcoef dct[16], int dequant_mf[6][16], int i_qp );
 void x264_dequant_4x4dc_sse2( dctcoef dct[16], int dequant_mf[6][16], int i_qp );
 #define x264_dequant_8x8_sse2 x264_template(dequant_8x8_sse2)
 void x264_dequant_8x8_sse2( dctcoef dct[64], int dequant_mf[6][64], int i_qp );
+#if CQM
 #define x264_dequant_4x4_avx x264_template(dequant_4x4_avx)
 void x264_dequant_4x4_avx( dctcoef dct[16], int dequant_mf[6][16], int i_qp );
+#endif
 #define x264_dequant_4x4dc_avx x264_template(dequant_4x4dc_avx)
 void x264_dequant_4x4dc_avx( dctcoef dct[16], int dequant_mf[6][16], int i_qp );
+#if CQM
 #define x264_dequant_8x8_avx x264_template(dequant_8x8_avx)
 void x264_dequant_8x8_avx( dctcoef dct[64], int dequant_mf[6][64], int i_qp );
 #define x264_dequant_4x4_xop x264_template(dequant_4x4_xop)
 void x264_dequant_4x4_xop( dctcoef dct[16], int dequant_mf[6][16], int i_qp );
+#endif
 #define x264_dequant_4x4dc_xop x264_template(dequant_4x4dc_xop)
 void x264_dequant_4x4dc_xop( dctcoef dct[16], int dequant_mf[6][16], int i_qp );
+#if CQM
 #define x264_dequant_8x8_xop x264_template(dequant_8x8_xop)
 void x264_dequant_8x8_xop( dctcoef dct[64], int dequant_mf[6][64], int i_qp );
+#endif
 #define x264_dequant_4x4_avx2 x264_template(dequant_4x4_avx2)
 void x264_dequant_4x4_avx2( dctcoef dct[16], int dequant_mf[6][16], int i_qp );
 #define x264_dequant_4x4dc_avx2 x264_template(dequant_4x4dc_avx2)
@@ -108,6 +114,7 @@ void x264_dequant_8x8_avx2( dctcoef dct[64], int dequant_mf[6][64], int i_qp );
 void x264_dequant_4x4_avx512( dctcoef dct[16], int dequant_mf[6][16], int i_qp );
 #define x264_dequant_8x8_avx512 x264_template(dequant_8x8_avx512)
 void x264_dequant_8x8_avx512( dctcoef dct[64], int dequant_mf[6][64], int i_qp );
+#if CQM
 #define x264_dequant_4x4_flat16_mmx x264_template(dequant_4x4_flat16_mmx)
 void x264_dequant_4x4_flat16_mmx( int16_t dct[16], int dequant_mf[6][16], int i_qp );
 #define x264_dequant_8x8_flat16_mmx x264_template(dequant_8x8_flat16_mmx)
@@ -122,6 +129,7 @@ void x264_dequant_4x4_flat16_avx2( int16_t dct[16], int dequant_mf[6][16], int i
 void x264_dequant_8x8_flat16_avx2( int16_t dct[64], int dequant_mf[6][64], int i_qp );
 #define x264_dequant_8x8_flat16_avx512 x264_template(dequant_8x8_flat16_avx512)
 void x264_dequant_8x8_flat16_avx512( int16_t dct[64], int dequant_mf[6][64], int i_qp );
+#endif
 #define x264_idct_dequant_2x4_dc_sse2 x264_template(idct_dequant_2x4_dc_sse2)
 void x264_idct_dequant_2x4_dc_sse2( dctcoef dct[8], dctcoef dct4x4[8][16], int dequant_mf[6][16], int i_qp );
 #define x264_idct_dequant_2x4_dc_avx x264_template(idct_dequant_2x4_dc_avx)

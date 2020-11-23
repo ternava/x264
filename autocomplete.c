@@ -311,8 +311,10 @@ int x264_cli_autocomplete( const char *prev, const char *cur )
         suggest_list( x264_colmatrix_names );
     OPT( "--colorprim" )
         suggest_list( x264_colorprim_names );
+#if CQM
     OPT( "--cqm" )
         suggest_list( x264_cqm_names );
+#endif
     OPT( "--demuxer" )
         suggest_list( x264_demuxer_names );
     OPT( "--direct" )

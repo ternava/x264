@@ -175,7 +175,9 @@ static cli_output_t cli_output;
 static cli_vid_filter_t filter;
 
 const char * const x264_avcintra_class_names[] = { "50", "100", "200", 0 };
+#if CQM
 const char * const x264_cqm_names[] = { "flat", "jvt", 0 };
+#endif
 const char * const x264_log_level_names[] = { "none", "error", "warning", "info", "debug", 0 };
 const char * const x264_partition_names[] = { "p8x8", "p4x4", "b8x8", "i8x8", "i4x4", "none", "all", 0 };
 const char * const x264_pulldown_names[] = { "none", "22", "32", "64", "double", "triple", "euro", 0 };
@@ -868,8 +870,10 @@ static void help( x264_param_t *defaults, int longhelp )
     H2( "      --deadzone-inter <int>  Set the size of the inter luma quantization deadzone [%d]\n", defaults->analyse.i_luma_deadzone[0] );
     H2( "      --deadzone-intra <int>  Set the size of the intra luma quantization deadzone [%d]\n", defaults->analyse.i_luma_deadzone[1] );
     H2( "                                  Deadzones should be in the range 0 - 32.\n" );
+#if CQM
     H2( "      --cqm <string>          Preset quant matrices [\"%s\"]\n"
         "                                  - %s\n", x264_cqm_names[0], stringify_names( buf, x264_cqm_names ) );
+#endif
     H1( "      --cqmfile <string>      Read custom quant matrices from a JM-compatible file\n" );
     H2( "                                  Overrides any other --cqm* options.\n" );
     H2( "      --cqm4 <list>           Set all 4x4 quant matrices\n"
@@ -1180,7 +1184,9 @@ static struct option long_options[] =
 #if NR
     { "nr",          required_argument, NULL, 0 },
 #endif
+#if CQM
     { "cqm",         required_argument, NULL, 0 },
+#endif
     { "cqmfile",     required_argument, NULL, 0 },
     { "cqm4",        required_argument, NULL, 0 },
     { "cqm4i",       required_argument, NULL, 0 },
