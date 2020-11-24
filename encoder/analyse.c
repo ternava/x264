@@ -252,10 +252,9 @@ static void mb_analyse_load_costs( x264_t *h, x264_mb_analysis_t *a )
     a->p_cost_ref[1] = h->cost_table->ref[a->i_qp][x264_clip3(h->sh.i_num_ref_idx_l1_active-1,0,2)];
 }
 
-/* #if PSY || UNKNOWN */
 static void mb_analyse_init_qp( x264_t *h, x264_mb_analysis_t *a, int qp )
 {
-#if PSY
+#if PSY || TRELLIS
     int effective_chroma_qp = h->chroma_qp_table[SPEC_QP(qp)] + X264_MAX( qp - QP_MAX_SPEC, 0 );
 #endif
     a->i_lambda = x264_lambda_tab[qp];
