@@ -1,8 +1,7 @@
 language: c
-before_install:
-  - sudo apt update
-  - sudo --add-repo http://www.nasm.us/nasm.repo
-  - sudo apt install nasm
+install:
+  - sudo apt-get update -y
+  - sudo apt-get install -y nasm
 compiler:
   - gcc
   - clang
