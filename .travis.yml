@@ -5,5 +5,5 @@ compiler:
   - gcc
   - clang
 install:
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get update -y; sudo apt-get install -y yasm; fi
+  - sudo apt update; sudo apt install nasm
 script: ./configure && make
