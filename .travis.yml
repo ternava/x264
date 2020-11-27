@@ -1,6 +1,7 @@
 language: c
 before_install:
   - sudo apt update
+  - yum-config-manager --add-repo http://www.nasm.us/nasm.repo
   - sudo apt install nasm
 compiler:
   - gcc
