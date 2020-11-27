@@ -14,7 +14,7 @@
 #define NR 0
 #endif
 #ifndef CQM
-#define CQM 0 /* An unknown error is shown when it's 0 */
+#define CQM 1 /* An unknown error is shown when it's 0 */
 #endif
 
 #ifndef UNKNOWN
