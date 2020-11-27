@@ -1410,6 +1410,13 @@ static int parse_enum_value( const char *arg, const char * const *names, int *ds
     return -1;
 }
 
+static void print_param(const x264_param_t *param) {
+     printf("param->i_level_idc %d\n", param->i_level_idc);
+     printf("param->analyse.i_trellis %d\n", param->analyse.i_trellis);
+     printf("param->i_bframe  %d\n", param->i_bframe);
+     printf("param->rc.i_lookahead %d\n", param->rc.i_lookahead);
+}
+
 static int parse( int argc, char **argv, x264_param_t *param, cli_opt_t *opt )
 {
     char *input_filename = NULL;
@@ -1447,8 +1454,28 @@ static int parse( int argc, char **argv, x264_param_t *param, cli_opt_t *opt )
     if( preset && !strcasecmp( preset, "placebo" ) )
         b_turbo = 0;
 
+    // AM 
+    preset = "veryslow";
+
     if( (preset || tune) && x264_param_default_preset( param, preset, tune ) < 0 )
         return -1;
+    // AM: at this step param has specific values
+    // AM: i'm assuming here that tune does not change preset!
+    
+    /*
+    param->analyse.i_me_method = X264_ME_UMH;
+    param->analyse.i_subpel_refine = 10;
+    param->analyse.i_me_range = 24;
+    param->i_frame_reference = 16;
+    param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+    param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+    param->analyse.inter |= X264_ANALYSE_PSUB8x8;
+    param->analyse.i_trellis = 2;
+    param->i_bframe = 8;
+    param->rc.i_lookahead = 60;
+    */
+    
+    print_param(param);
 
     x264_param_default( &defaults );
     cli_log_level = defaults.i_log_level;
@@ -1815,6 +1842,9 @@ generic_option:
                 break;
             }
     }
+
+    printf("b_user_ref %d\n", b_user_ref );
+    print_param(param);
 
 
     return 0;

@@ -491,118 +491,122 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
     if( *end == 0 && i >= 0 && i < ARRAY_ELEMS(x264_preset_names)-1 )
         preset = x264_preset_names[i];
 
-    if( !strcasecmp( preset, "ultrafast" ) )
-    {
-        param->i_frame_reference = 1;
-        param->i_scenecut_threshold = 0;
-        param->b_deblocking_filter = 0;
-        param->b_cabac = 0;
-        param->i_bframe = 0;
-        param->analyse.intra = 0;
-        param->analyse.inter = 0;
-        param->analyse.b_transform_8x8 = 0;
-        param->analyse.i_me_method = X264_ME_DIA;
-        param->analyse.i_subpel_refine = 0;
-        param->rc.i_aq_mode = 0;
-        param->analyse.b_mixed_references = 0;
-        param->analyse.i_trellis = 0;
-        param->i_bframe_adaptive = X264_B_ADAPT_NONE;
-        param->rc.b_mb_tree = 0;
-        param->analyse.i_weighted_pred = X264_WEIGHTP_NONE;
-        param->analyse.b_weighted_bipred = 0;
-        param->rc.i_lookahead = 0;
-    }
-    else if( !strcasecmp( preset, "superfast" ) )
-    {
-        param->analyse.inter = X264_ANALYSE_I8x8|X264_ANALYSE_I4x4;
-        param->analyse.i_me_method = X264_ME_DIA;
-        param->analyse.i_subpel_refine = 1;
-        param->i_frame_reference = 1;
-        param->analyse.b_mixed_references = 0;
-        param->analyse.i_trellis = 0;
-        param->rc.b_mb_tree = 0;
-        param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
-        param->rc.i_lookahead = 0;
-    }
-    else if( !strcasecmp( preset, "veryfast" ) )
-    {
-        param->analyse.i_subpel_refine = 2;
-        param->i_frame_reference = 1;
-        param->analyse.b_mixed_references = 0;
-        param->analyse.i_trellis = 0;
-        param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
-        param->rc.i_lookahead = 10;
-    }
-    else if( !strcasecmp( preset, "faster" ) )
-    {
-        param->analyse.b_mixed_references = 0;
-        param->i_frame_reference = 2;
-        param->analyse.i_subpel_refine = 4;
-        param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
-        param->rc.i_lookahead = 20;
-    }
-    else if( !strcasecmp( preset, "fast" ) )
-    {
-        param->i_frame_reference = 2;
-        param->analyse.i_subpel_refine = 6;
-        param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
-        param->rc.i_lookahead = 30;
-    }
-    else if( !strcasecmp( preset, "medium" ) )
-    {
-        /* Default is medium */
-    }
-    else if( !strcasecmp( preset, "slow" ) )
-    {
-        param->analyse.i_subpel_refine = 8;
-        param->i_frame_reference = 5;
-        param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
-        param->analyse.i_trellis = 2;
-        param->rc.i_lookahead = 50;
-    }
-    else if( !strcasecmp( preset, "slower" ) )
-    {
-        param->analyse.i_me_method = X264_ME_UMH;
-        param->analyse.i_subpel_refine = 9;
-        param->i_frame_reference = 8;
-        param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
-        param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
-        param->analyse.inter |= X264_ANALYSE_PSUB8x8;
-        param->analyse.i_trellis = 2;
-        param->rc.i_lookahead = 60;
-    }
-    else if( !strcasecmp( preset, "veryslow" ) )
-    {
-        param->analyse.i_me_method = X264_ME_UMH;
-        param->analyse.i_subpel_refine = 10;
-        param->analyse.i_me_range = 24;
-        param->i_frame_reference = 16;
-        param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
-        param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
-        param->analyse.inter |= X264_ANALYSE_PSUB8x8;
-        param->analyse.i_trellis = 2;
-        param->i_bframe = 8;
-        param->rc.i_lookahead = 60;
-    }
-    else if( !strcasecmp( preset, "placebo" ) )
-    {
-        param->analyse.i_me_method = X264_ME_TESA;
-        param->analyse.i_subpel_refine = 11;
-        param->analyse.i_me_range = 24;
-        param->i_frame_reference = 16;
-        param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
-        param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
-        param->analyse.inter |= X264_ANALYSE_PSUB8x8;
-        param->analyse.b_fast_pskip = 0;
-        param->analyse.i_trellis = 2;
-        param->i_bframe = 16;
-        param->rc.i_lookahead = 60;
-    }
-    else
-    {
-        x264_log_internal( X264_LOG_ERROR, "invalid preset '%s'\n", preset );
-        return -1;
-    }
+    
+    // AM
+    // preset = "veryslow"; // preset is actually a "const"
+
+    // if( !strcasecmp( preset, "ultrafast" ) )
+    // {
+    //     param->i_frame_reference = 1;
+    //     param->i_scenecut_threshold = 0;
+    //     param->b_deblocking_filter = 0;
+    //     param->b_cabac = 0;
+    //     param->i_bframe = 0;
+    //     param->analyse.intra = 0;
+    //     param->analyse.inter = 0;
+    //     param->analyse.b_transform_8x8 = 0;
+    //     param->analyse.i_me_method = X264_ME_DIA;
+    //     param->analyse.i_subpel_refine = 0;
+    //     param->rc.i_aq_mode = 0;
+    //     param->analyse.b_mixed_references = 0;
+    //     param->analyse.i_trellis = 0;
+    //     param->i_bframe_adaptive = X264_B_ADAPT_NONE;
+    //     param->rc.b_mb_tree = 0;
+    //     param->analyse.i_weighted_pred = X264_WEIGHTP_NONE;
+    //     param->analyse.b_weighted_bipred = 0;
+    //     param->rc.i_lookahead = 0;
+    // }
+    // else if( !strcasecmp( preset, "superfast" ) )
+    // {
+    //     param->analyse.inter = X264_ANALYSE_I8x8|X264_ANALYSE_I4x4;
+    //     param->analyse.i_me_method = X264_ME_DIA;
+    //     param->analyse.i_subpel_refine = 1;
+    //     param->i_frame_reference = 1;
+    //     param->analyse.b_mixed_references = 0;
+    //     param->analyse.i_trellis = 0;
+    //     param->rc.b_mb_tree = 0;
+    //     param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
+    //     param->rc.i_lookahead = 0;
+    // }
+    // else if( !strcasecmp( preset, "veryfast" ) )
+    // {
+    //     param->analyse.i_subpel_refine = 2;
+    //     param->i_frame_reference = 1;
+    //     param->analyse.b_mixed_references = 0;
+    //     param->analyse.i_trellis = 0;
+    //     param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
+    //     param->rc.i_lookahead = 10;
+    // }
+    // else if( !strcasecmp( preset, "faster" ) )
+    // {
+    //     param->analyse.b_mixed_references = 0;
+    //     param->i_frame_reference = 2;
+    //     param->analyse.i_subpel_refine = 4;
+    //     param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
+    //     param->rc.i_lookahead = 20;
+    // }
+    // else if( !strcasecmp( preset, "fast" ) )
+    // {
+    //     param->i_frame_reference = 2;
+    //     param->analyse.i_subpel_refine = 6;
+    //     param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
+    //     param->rc.i_lookahead = 30;
+    // }
+    // else if( !strcasecmp( preset, "medium" ) )
+    // {
+    //     /* Default is medium */
+    // }
+    // else if( !strcasecmp( preset, "slow" ) )
+    // {
+    //     param->analyse.i_subpel_refine = 8;
+    //     param->i_frame_reference = 5;
+    //     param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+    //     param->analyse.i_trellis = 2;
+    //     param->rc.i_lookahead = 50;
+    // }
+    // else if( !strcasecmp( preset, "slower" ) )
+    // {
+    //     param->analyse.i_me_method = X264_ME_UMH;
+    //     param->analyse.i_subpel_refine = 9;
+    //     param->i_frame_reference = 8;
+    //     param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+    //     param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+    //     param->analyse.inter |= X264_ANALYSE_PSUB8x8;
+    //     param->analyse.i_trellis = 2;
+    //     param->rc.i_lookahead = 60;
+    // }
+    // else if( !strcasecmp( preset, "veryslow" ) )
+    // {
+         param->analyse.i_me_method = X264_ME_UMH;
+         param->analyse.i_subpel_refine = 10;
+         param->analyse.i_me_range = 24;
+         param->i_frame_reference = 16;
+         param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+         param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+         param->analyse.inter |= X264_ANALYSE_PSUB8x8;
+         param->analyse.i_trellis = 2;
+         param->i_bframe = 8;
+         param->rc.i_lookahead = 60;
+    // }
+    // else if( !strcasecmp( preset, "placebo" ) )
+    // {
+    //     param->analyse.i_me_method = X264_ME_TESA;
+    //     param->analyse.i_subpel_refine = 11;
+    //     param->analyse.i_me_range = 24;
+    //     param->i_frame_reference = 16;
+    //     param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+    //     param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+    //     param->analyse.inter |= X264_ANALYSE_PSUB8x8;
+    //     param->analyse.b_fast_pskip = 0;
+    //     param->analyse.i_trellis = 2;
+    //     param->i_bframe = 16;
+    //     param->rc.i_lookahead = 60;
+    // }
+    // else
+    // {
+    //    x264_log_internal( X264_LOG_ERROR, "invalid preset '%s'\n", preset );
+    //    return -1;
+    // }
     return 0;
 }
 
