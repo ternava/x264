@@ -1,9 +1,9 @@
 language: c
-install:
-  - sudo apt-get update -y
-  - sudo apt install ffmpeg
-  - sudo apt-get install -y nasm
+#install:
+#  - sudo apt-get update -y
+#  - sudo apt install ffmpeg
+#  - sudo apt-get install -y nasm
 compiler:
   - gcc
   - clang
-script: ./configure && make
+script: ./configure --disable-asm && make
