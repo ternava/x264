@@ -1,20 +1,20 @@
 #ifndef MIXED_REFS
-#define MIXED_REFS 1
+#define MIXED_REFS 0
 #endif
 #ifndef TRELLIS
-#define TRELLIS 1
+#define TRELLIS 0
 #endif
 #ifndef PSY
-#define PSY 1
+#define PSY 0
 #endif
 #ifndef PSY_RD
-#define PSY_RD 1
+#define PSY_RD 0
 #endif
 #ifndef NR
-#define NR 1
+#define NR 0
 #endif
 #ifndef CQM
-#define CQM 1 /* An unknown error is shown when it's 0 */
+#define CQM 0 /* An unknown error is shown when it's 0 */
 #endif
 
 #ifndef UNKNOWN
