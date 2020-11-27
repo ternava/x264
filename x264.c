@@ -414,6 +414,19 @@ REALIGN_STACK int main( int argc, char **argv )
     if( parse( argc, argv, &param, &opt ) < 0 )
         ret = -1;
 
+    // AM: trying constant propagation here
+    // see also assumptions
+    param.analyse.i_me_method = X264_ME_UMH;
+    param.analyse.i_subpel_refine = 10;
+    param.analyse.i_me_range = 24;
+    param.i_frame_reference = 16;
+    param.i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+    param.analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+    param.analyse.inter |= X264_ANALYSE_PSUB8x8;
+    param.analyse.i_trellis = 2;
+    param.i_bframe = 8;
+    param.rc.i_lookahead = 60;
+
 #ifdef _WIN32
     /* Restore title; it can be changed by input modules */
     SetConsoleTitleW( org_console_title );
@@ -1962,6 +1975,18 @@ do\
 
 static int encode( x264_param_t *param, cli_opt_t *opt )
 {
+    // AM (constant propagations)
+    param->analyse.i_me_method = X264_ME_UMH;
+    param->analyse.i_subpel_refine = 10;
+    param->analyse.i_me_range = 24;
+    param->i_frame_reference = 16;
+    param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+    param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+    param->analyse.inter |= X264_ANALYSE_PSUB8x8;
+    param->analyse.i_trellis = 2;
+    param->i_bframe = 8;
+    param->rc.i_lookahead = 60;
+
     x264_t *h = NULL;
     x264_picture_t pic;
     cli_pic_t cli_pic;
@@ -1998,6 +2023,7 @@ static int encode( x264_param_t *param, cli_opt_t *opt )
         param->i_timebase_den = param->i_fps_num * pulldown->fps_factor;
     }
 
+    
     h = x264_encoder_open( param );
     FAIL_IF_ERROR2( !h, "x264_encoder_open failed\n" );
 

@@ -430,6 +430,20 @@ static void encoder_thread_init( x264_t *h )
 
 static int validate_parameters( x264_t *h, int b_open )
 {
+
+
+    // AM constant propagation here again
+    h->param.analyse.i_me_method = X264_ME_UMH;
+    h->param.analyse.i_subpel_refine = 10;
+    h->param.analyse.i_me_range = 24;
+    h->param.i_frame_reference = 16;
+    h->param.i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+    h->param.analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+    h->param.analyse.inter |= X264_ANALYSE_PSUB8x8;
+    h->param.analyse.i_trellis = 2;
+    h->param.i_bframe = 8;
+    h->param.rc.i_lookahead = 60;
+
     if( !h->param.pf_log )
     {
         x264_log_internal( X264_LOG_ERROR, "pf_log not set! did you forget to call x264_param_default?\n" );
@@ -1055,7 +1069,11 @@ static int validate_parameters( x264_t *h, int b_open )
     if( h->param.i_keyint_min == X264_KEYINT_MIN_AUTO )
         h->param.i_keyint_min = X264_MIN( h->param.i_keyint_max / 10, (int)fps );
     h->param.i_keyint_min = x264_clip3( h->param.i_keyint_min, 1, h->param.i_keyint_max/2+1 );
-    h->param.rc.i_lookahead = x264_clip3( h->param.rc.i_lookahead, 0, X264_LOOKAHEAD_MAX );
+    printf("h->param.rc.i_lookahead %d\n", h->param.rc.i_lookahead);
+    // AM: very agressive constant propagation 
+    // h->param.rc.i_lookahead = x264_clip3( h->param.rc.i_lookahead, 0, X264_LOOKAHEAD_MAX );
+    h->param.rc.i_lookahead = h->param.rc.i_lookahead;
+    printf("(clip3) h->param.rc.i_lookahead %d\n", h->param.rc.i_lookahead);
     {
         int maxrate = X264_MAX( h->param.rc.i_vbv_max_bitrate, h->param.rc.i_bitrate );
         float bufsize = maxrate ? (float)h->param.rc.i_vbv_buffer_size / maxrate : 0;
@@ -1452,6 +1470,20 @@ static void set_aspect_ratio( x264_t *h, x264_param_t *param, int initial )
  ****************************************************************************/
 x264_t *x264_encoder_open( x264_param_t *param )
 {
+
+    // AM (constant propagations here)
+    // see also assumptions
+    param->analyse.i_me_method = X264_ME_UMH;
+    param->analyse.i_subpel_refine = 10;
+    param->analyse.i_me_range = 24;
+    param->i_frame_reference = 16;
+    param->i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+    param->analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+    param->analyse.inter |= X264_ANALYSE_PSUB8x8;
+    param->analyse.i_trellis = 2;
+    param->i_bframe = 8;
+    param->rc.i_lookahead = 60;
+
     x264_t *h;
     char buf[1000], *p;
     int i_slicetype_length;
@@ -1460,6 +1492,20 @@ x264_t *x264_encoder_open( x264_param_t *param )
 
     /* Create a copy of param */
     memcpy( &h->param, param, sizeof(x264_param_t) );
+
+    // AM constant propagation here again
+    h->param.analyse.i_me_method = X264_ME_UMH;
+    h->param.analyse.i_subpel_refine = 10;
+    h->param.analyse.i_me_range = 24;
+    h->param.i_frame_reference = 16;
+    h->param.i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+    h->param.analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+    h->param.analyse.inter |= X264_ANALYSE_PSUB8x8;
+    h->param.analyse.i_trellis = 2;
+    h->param.i_bframe = 8;
+    h->param.rc.i_lookahead = 60;
+
+
     h->param.opaque = NULL;
     h->param.param_free = NULL;
 
