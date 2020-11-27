@@ -1,7 +1,7 @@
 language: c
 install:
   - sudo apt-get update -y
-  - sudo apt-get install -y nasm
+  - sudo apt-get install -y nasm-2.13
 compiler:
   - gcc
   - clang
