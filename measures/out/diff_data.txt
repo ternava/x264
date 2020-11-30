@@ -1,0 +1,4 @@
+The size difference of rout01.mkv and out01.mkv is: 100%
+The size difference of rout03.mkv and out03.mkv is: 101%
+The size difference of rout04.mkv and out04.mkv is: 103%
+The size difference of rout05.mkv and out05.mkv is: 102%
