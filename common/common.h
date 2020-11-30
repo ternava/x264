@@ -118,7 +118,10 @@
 #if HAVE_OPENCL
 #include "opencl.h"
 #endif
+/* Excluding it requires to remove more lines of code in other files. TODO*/
+//#if CABAC
 #include "cabac.h"
+//#endif
 #include "bitstream.h"
 #include "set.h"
 #include "predict.h"
@@ -139,8 +142,10 @@ void x264_log( x264_t *h, int i_level, const char *psz_fmt, ... );
 
 #define x264_cavlc_init x264_template(cavlc_init)
 void x264_cavlc_init( x264_t *h );
+//#if CABAC
 #define x264_cabac_init x264_template(cabac_init)
 void x264_cabac_init( x264_t *h );
+//#endif
 
 static ALWAYS_INLINE pixel x264_clip_pixel( int x )
 {
@@ -367,8 +372,10 @@ struct x264_t
     int b_sh_backup;
     x264_slice_header_t sh_backup;
 
+//#if CABAC
     /* cabac context */
     x264_cabac_t    cabac;
+//#endif
 
     struct
     {
@@ -527,9 +534,13 @@ struct x264_t
         int8_t  (*intra4x4_pred_mode)[8];   /* intra4x4 pred mode. for non I4x4 set to I_PRED_4x4_DC(2) */
                                             /* actually has only 7 entries; set to 8 for write-combining optimizations */
         uint8_t (*non_zero_count)[16*3];    /* nzc. for I_PCM set to 16 */
+//#if CABAC 
         int8_t  *chroma_pred_mode;          /* chroma_pred_mode. cabac only. for non intra I_PRED_CHROMA_DC(0) */
+//#endif
         int16_t (*mv[2])[2];                /* mb mv. set to 0 for intra mb */
+#if CABAC
         uint8_t (*mvd[2])[8][2];            /* absolute value of mb mv difference with predict, clipped to [0,33]. set to 0 if intra. cabac only */
+#endif
         int8_t   *ref[2];                   /* mb ref. set to -1 if non used (intra or Lx only) */
         int16_t (*mvr[2][X264_REF_MAX*2])[2];/* 16x16 mv for each possible ref */
         int8_t  *skipbp;                    /* block pattern for SKIP or DIRECT (sub)mbs. B-frames + cabac only */

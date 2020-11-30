@@ -16,6 +16,9 @@
 #ifndef CQM
 #define CQM 1 /* An unknown error is shown when it's 0 */
 #endif
+#ifndef CABAC
+#define CABAC 0
+#endif
 
 #ifndef UNKNOWN
 #define UNKNOWN 1

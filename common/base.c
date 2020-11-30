@@ -394,7 +394,9 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
     param->i_deblocking_filter_alphac0 = 0;
     param->i_deblocking_filter_beta = 0;
 
+#if CABAC
     param->b_cabac = 1;
+#endif
     param->i_cabac_init_idc = 0;
 
     param->rc.i_rc_method = X264_RC_CRF;
@@ -508,7 +510,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->i_frame_reference = 1;
         param->i_scenecut_threshold = 0;
         param->b_deblocking_filter = 0;
+#if CABAC
         param->b_cabac = 0;
+#endif
         param->i_bframe = 0;
         param->analyse.intra = 0;
         param->analyse.inter = 0;
@@ -712,7 +716,9 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
         else if( len == 10 && !strncasecmp( tune, "fastdecode", 10 ) )
         {
             param->b_deblocking_filter = 0;
+#if CABAC
             param->b_cabac = 0;
+#endif
             param->analyse.b_weighted_bipred = 0;
             param->analyse.i_weighted_pred = X264_WEIGHTP_NONE;
         }
@@ -836,7 +842,9 @@ REALIGN_STACK int x264_param_apply_profile( x264_param_t *param, const char *pro
     if( p == PROFILE_BASELINE )
     {
         param->analyse.b_transform_8x8 = 0;
+#if CABAC
         param->b_cabac = 0;
+#endif
 #if CQM
         param->i_cqm_preset = X264_CQM_FLAT;
 #endif
@@ -1165,8 +1173,10 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
         p->i_slice_count = atoi(value);
     OPT("slices-max")
         p->i_slice_count_max = atoi(value);
+#if CABAC
     OPT("cabac")
         p->b_cabac = atobool(value);
+#endif
     OPT("cabac-idc")
         p->i_cabac_init_idc = atoi(value);
     OPT("interlaced")
@@ -1473,7 +1483,9 @@ char *x264_param2string( x264_param_t *p, int b_res )
 
     if( p->b_opencl )
         s += sprintf( s, "opencl=%d ", p->b_opencl );
+#if CABAC
     s += sprintf( s, "cabac=%d", p->b_cabac );
+#endif
     s += sprintf( s, " ref=%d", p->i_frame_reference );
     s += sprintf( s, " deblock=%d:%d:%d", p->b_deblocking_filter,
                   p->i_deblocking_filter_alphac0, p->i_deblocking_filter_beta );
