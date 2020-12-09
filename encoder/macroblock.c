@@ -823,11 +823,11 @@ static ALWAYS_INLINE void macroblock_encode_internal( x264_t *h, int plane_count
         {
             ALIGNED_ARRAY_64( dctcoef, dct8x8,[4],[64] );
 
-#if TRELLIS && CABAC
+#if TRELLIS && CABAC_NO
             b_decimate &= !h->mb.b_trellis || !h->param.b_cabac; // 8x8 trellis is inherently optimal decimation for CABAC
-#elif TRELLIS && !CABAC
+#elif TRELLIS && CABAC_YES
             b_decimate &= !h->mb.b_trellis;
-#elif !TRELLIS && CABAC
+#elif !TRELLIS && CABAC_NO
             b_decimate &= !h->param.b_cabac; // 8x8 trellis is inherently optimal decimation for CABAC
 #endif
 
@@ -976,7 +976,7 @@ static ALWAYS_INLINE void macroblock_encode_internal( x264_t *h, int plane_count
 
     /* store cbp */
     int cbp = h->mb.i_cbp_chroma << 4 | h->mb.i_cbp_luma;
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
         cbp |= h->mb.cache.non_zero_count[x264_scan8[LUMA_DC    ]] << 8
             |  h->mb.cache.non_zero_count[x264_scan8[CHROMA_DC+0]] << 9

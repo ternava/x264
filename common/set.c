@@ -256,7 +256,7 @@ int x264_cqm_init( x264_t *h )
             h->param.rc.i_qp_min = max_qp_err+1;
         /* If long level-codes aren't allowed, we need to allow QP high enough to avoid them. */
         if( 
-#if CABAC
+#if CABAC_NO
             !h->param.b_cabac && 
 #endif
             h->sps->i_profile_idc < PROFILE_HIGH )

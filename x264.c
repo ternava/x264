@@ -1082,10 +1082,12 @@ static struct option long_options[] =
     { "bff",               no_argument, NULL, OPT_INTERLACED },
     { "no-interlaced",     no_argument, NULL, OPT_INTERLACED },
     { "constrained-intra", no_argument, NULL, 0 },
-#if CABAC
+#if CABAC_YES
     { "cabac",             no_argument, NULL, 0 },
 #endif
+#if CABAC_NO
     { "no-cabac",          no_argument, NULL, 0 },
+#endif
     { "qp",          required_argument, NULL, 'q' },
     { "qpmin",       required_argument, NULL, 0 },
     { "qpmax",       required_argument, NULL, 0 },

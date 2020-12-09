@@ -367,7 +367,10 @@ typedef struct x264_param_t
     int         i_deblocking_filter_alphac0;    /* [-6, 6] -6 light filter, 6 strong */
     int         i_deblocking_filter_beta;       /* [-6, 6]  idem */
 
+#include "removeoption.h"
+#if CABAC_YES || CABAC_NO
     int         b_cabac;
+#endif
     int         i_cabac_init_idc;
 
     int         b_interlaced;

@@ -133,7 +133,7 @@ void x264_sps_init( x264_sps_t *sps, int i_id, x264_param_t *param )
         sps->i_profile_idc  = PROFILE_HIGH;
     }
     else if( 
-#if CABAC
+#if CABAC_YES
         param->b_cabac || 
 #endif
         param->i_bframe > 0 || param->b_interlaced || param->b_fake_interlaced || param->analyse.i_weighted_pred > 0 ) {
@@ -498,7 +498,7 @@ void x264_pps_init( x264_pps_t *pps, int i_id, x264_param_t *param, x264_sps_t *
 {
     pps->i_id = i_id;
     pps->i_sps_id = sps->i_id;
-#if CABAC
+#if CABAC_YES || CABAC_NO
     pps->b_cabac = param->b_cabac;
 #endif
 
@@ -528,7 +528,7 @@ void x264_pps_write( bs_t *s, x264_sps_t *sps, x264_pps_t *pps )
     bs_write_ue( s, pps->i_id );
     bs_write_ue( s, pps->i_sps_id );
 
-#if CABAC
+#if CABAC_YES || CABAC_NO
     bs_write1( s, pps->b_cabac );
 #endif
     bs_write1( s, pps->b_pic_order );

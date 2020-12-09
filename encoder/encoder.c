@@ -348,10 +348,16 @@ static void slice_header_write( bs_t *s, x264_slice_header_t *sh, int i_nal_ref_
     }
 
     if( 
-#if CABAC
-        sh->pps->b_cabac && 
+#if CABAC_YES
+        sh->pps->b_cabac
 #endif
-        sh->i_type != SLICE_TYPE_I )
+#if CABAC_YES && CABAC_NO
+        &&
+#endif
+#if CABAC_NO
+        sh->i_type
+#endif
+         != SLICE_TYPE_I )
         bs_write_ue( s, sh->i_cabac_init_idc );
 
     bs_write_se( s, sh->i_qp_delta );      /* slice qp delta */
@@ -370,17 +376,22 @@ static void slice_header_write( bs_t *s, x264_slice_header_t *sh, int i_nal_ref_
 /* If we are within a reasonable distance of the end of the memory allocated for the bitstream, */
 /* reallocate, adding an arbitrary amount of space. */
 static int bitstream_check_buffer_internal( x264_t *h, int size, 
-#if CABAC
- int b_cabac,
+#if CABAC_YES || CABAC_NO
+        int b_cabac,
 #endif
- int i_nal )
+        int i_nal )
 {
-    if( (
-#if CABAC
-        b_cabac && 
+    if(
+#if CABAC_YES
+       ( b_cabac && (h->cabac.p_end - h->cabac.p < size))
 #endif
-        (h->cabac.p_end - h->cabac.p < size)) ||
-        (h->out.bs.p_end - h->out.bs.p < size) )
+#if CABAC_YES && CABAC_NO
+         ||
+#endif
+#if CABAC_NO
+        (h->out.bs.p_end - h->out.bs.p < size)
+#endif
+         )
     {
         if( size > INT_MAX - h->out.i_bitstream )
             return -1;
@@ -416,7 +427,7 @@ static int bitstream_check_buffer( x264_t *h )
 {
     int max_row_size = (2500 << SLICE_MBAFF) * h->mb.i_mb_width;
     return bitstream_check_buffer_internal( h, max_row_size, 
-#if CABAC
+#if CABAC_YES || CABAC_NO
     h->param.b_cabac,
 #endif
      h->out.i_nal );
@@ -426,7 +437,7 @@ static int bitstream_check_buffer_filler( x264_t *h, int filler )
 {
     filler += 32; // add padding for safety
     return bitstream_check_buffer_internal( h, filler, 
-#if CABAC
+#if CABAC_YES || CABAC_NO
     0, 
 #endif
     -1 );
@@ -829,7 +840,7 @@ static int validate_parameters( x264_t *h, int b_open )
         h->param.analyse.b_transform_8x8 = 1;
         h->param.analyse.intra = X264_ANALYSE_I8x8;
         h->param.analyse.i_chroma_qp_offset = res && type ? 3 : 4;
-#if CABAC
+#if CABAC_YES || CABAC_NO
         h->param.b_cabac = !type;
 #endif
         h->param.rc.i_vbv_buffer_size = avcintra_lut[type][res][i].frame_size;
@@ -921,12 +932,10 @@ static int validate_parameters( x264_t *h, int b_open )
 #endif
         h->param.i_bframe = 0;
         /* 8x8dct is not useful without RD in CAVLC lossless */
-        if( 
-#if CABAC
-            !h->param.b_cabac && 
-#endif
-            h->param.analyse.i_subpel_refine < 6 )
+#if CABAC_NO
+        if( !h->param.b_cabac && h->param.analyse.i_subpel_refine < 6 )
             h->param.analyse.b_transform_8x8 = 0;
+#endif
     }
     if( h->param.rc.i_rc_method == X264_RC_CQP )
     {
@@ -1390,7 +1399,7 @@ static int validate_parameters( x264_t *h, int b_open )
 
     /* ensure the booleans are 0 or 1 so they can be used in math */
 #define BOOLIFY(x) h->param.x = !!h->param.x
-#if CABAC
+#if CABAC_YES || CABAC_NO
     BOOLIFY( b_cabac );
 #endif
     BOOLIFY( b_constrained_intra );
@@ -1690,12 +1699,16 @@ x264_t *x264_encoder_open( x264_param_t *param )
     x264_quant_init( h, h->param.cpu, &h->quantf );
     x264_deblock_init( h->param.cpu, &h->loopf, PARAM_INTERLACED );
     x264_bitstream_init( h->param.cpu, &h->bsf );
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
         x264_cabac_init( h );
+#endif
+#if CABAC_YES && CABAC_NO
     else
 #endif
+#if CABAC_NO
         x264_cavlc_init( h );
+#endif
 
     mbcmp_init( h );
     chroma_dsp_init( h );
@@ -2734,7 +2747,7 @@ static ALWAYS_INLINE void bitstream_backup( x264_t *h, x264_bs_bak_t *bak, int i
     /* In the per-MB backup, we don't need the contexts because flushing the CABAC
      * encoder has no context dependency and in this case, a slice is ended (and
      * thus the content of all contexts are thrown away). */
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
     {
         if( full )
@@ -2745,12 +2758,16 @@ static ALWAYS_INLINE void bitstream_backup( x264_t *h, x264_bs_bak_t *bak, int i
          * backed up. */
         bak->cabac_prevbyte = h->cabac.p[-1];
     }
+#endif
+#if CABAC_YES && CABAC_NO
     else
     {
 #endif
+#if CABAC_NO
         bak->bs = h->out.bs;
         bak->skip = i_skip;
-#if CABAC
+#endif
+#if CABAC_YES && CABAC_NO
     }
 #endif
 }
@@ -2769,7 +2786,7 @@ static ALWAYS_INLINE void bitstream_restore( x264_t *h, x264_bs_bak_t *bak, int 
         h->stat.frame.i_mv_bits = bak->stat.i_mv_bits;
         h->stat.frame.i_tex_bits = bak->stat.i_tex_bits;
     }
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
     {
         if( full )
@@ -2778,12 +2795,16 @@ static ALWAYS_INLINE void bitstream_restore( x264_t *h, x264_bs_bak_t *bak, int 
             memcpy( &h->cabac, &bak->cabac, offsetof(x264_cabac_t, f8_bits_encoded) );
         h->cabac.p[-1] = bak->cabac_prevbyte;
     }
+#endif
+#if CABAC_YES && CABAC_NO
     else
     {
 #endif
+#if CABAC_NO
         h->out.bs = bak->bs;
         *skip = bak->skip;
-#if CABAC
+#endif
+#if CABAC_YES && CABAC_NO
     }
 #endif
 }
@@ -2797,17 +2818,15 @@ static intptr_t slice_write( x264_t *h )
      * Then add an extra 5 bytes just in case, to account for random NAL escapes and
      * other inaccuracies. */
     int overhead_guess = (NALU_OVERHEAD - (h->param.b_annexb && h->out.i_nal)) + 1 + 
-#if CABAC
+#if CABAC_YES
     h->param.b_cabac +
 #endif
      5;
     int slice_max_size = h->param.i_slice_max_size > 0 ? (h->param.i_slice_max_size-overhead_guess)*8 : 0;
-    int back_up_bitstream_cavlc = 
-#if CABAC
-    !h->param.b_cabac && 
-#endif
-    h->sps->i_profile_idc < PROFILE_HIGH;
+#if CABAC_YES || CABAC_NO
+    int back_up_bitstream_cavlc = !h->param.b_cabac && h->sps->i_profile_idc < PROFILE_HIGH;
     int back_up_bitstream = slice_max_size || back_up_bitstream_cavlc;
+#endif
     int starting_bits = bs_pos(&h->out.bs);
     int b_deblock = h->sh.i_disable_deblocking_filter_idc != 1;
     int b_hpel = h->fdec->b_kept_as_ref;
@@ -2836,7 +2855,7 @@ static intptr_t slice_write( x264_t *h )
     h->sh.i_qp_delta = h->sh.i_qp - h->pps->i_pic_init_qp;
 
     slice_header_write( &h->out.bs, &h->sh, h->i_nal_ref_idc );
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
     {
         /* alignment needed */
@@ -2847,9 +2866,13 @@ static intptr_t slice_write( x264_t *h )
         x264_cabac_encode_init ( &h->cabac, h->out.bs.p, h->out.bs.p_end );
         last_emu_check = h->cabac.p;
     }
+#endif
+#if CABAC_YES && CABAC_NO
     else
 #endif
+#if CABAC_NO
         last_emu_check = h->out.bs.p;
+#endif
     h->mb.i_last_qp = h->sh.i_qp;
     h->mb.i_last_dqp = 0;
     h->mb.field_decoding_flag = 0;
@@ -2861,10 +2884,7 @@ static intptr_t slice_write( x264_t *h )
     while( 1 )
     {
         mb_xy = i_mb_x + i_mb_y * h->mb.i_mb_width;
-        int mb_spos = bs_pos(&h->out.bs) 
-#if CABAC
-        + x264_cabac_pos(&h->cabac)
-#endif
+        int mb_spos = bs_pos(&h->out.bs) + x264_cabac_pos(&h->cabac)
 ;
         if( i_mb_x == 0 )
         {
@@ -2878,8 +2898,10 @@ static intptr_t slice_write( x264_t *h )
 
         if( back_up_bitstream )
         {
+#if CABAC_NO
             if( back_up_bitstream_cavlc )
                 bitstream_backup( h, &bs_bak[BS_BAK_CAVLC_OVERFLOW], i_skip, 0 );
+#endif
             if( slice_max_size && !(i_mb_y & SLICE_MBAFF) )
             {
                 bitstream_backup( h, &bs_bak[BS_BAK_SLICE_MAX_SIZE], i_skip, 0 );
@@ -2916,7 +2938,7 @@ static intptr_t slice_write( x264_t *h )
 reencode:
         x264_macroblock_encode( h );
 
-#if CABAC
+#if CABAC_YES
         if( h->param.b_cabac )
         {
             if( mb_xy > h->sh.i_first_mb && !(SLICE_MBAFF && (i_mb_y&1)) )
@@ -2931,9 +2953,12 @@ reencode:
                 x264_macroblock_write_cabac( h, &h->cabac );
             }
         }
+#endif
+#if CABAC_YES && CABAC_NO
         else
         {
 #endif
+#if CABAC_NO
             if( IS_SKIP( h->mb.i_type ) )
                 i_skip++;
             else
@@ -2955,30 +2980,25 @@ reencode:
                     goto reencode;
                 }
             }
-#if CABAC
+#endif            
+#if CABAC_YES && CABAC_NO
         }
 #endif
 
-        int total_bits = bs_pos(&h->out.bs) 
-#if CABAC
-        + x264_cabac_pos(&h->cabac)
-#endif
-        ;
+        int total_bits = bs_pos(&h->out.bs) + x264_cabac_pos(&h->cabac);
         int mb_size = total_bits - mb_spos;
 
         if( slice_max_size && (!SLICE_MBAFF || (i_mb_y&1)) )
         {
             /* Count the skip run, just in case. */
-#if CABAC
+#if CABAC_NO
             if( !h->param.b_cabac )
                 total_bits += bs_size_ue_big( i_skip );
 #endif
             /* Check for escape bytes. */
-            uint8_t *end = 
-#if CABAC
-            h->param.b_cabac ? h->cabac.p : 
+#if CABAC_YES || CABAC_NO
+            uint8_t *end = h->param.b_cabac ? h->cabac.p : h->out.bs.p;
 #endif
-            h->out.bs.p;
             for( ; last_emu_check < end - 2; last_emu_check++ )
                 if( last_emu_check[0] == 0 && last_emu_check[1] == 0 && last_emu_check[2] <= 3 )
                 {
@@ -3143,21 +3163,25 @@ cont:
 
     h->out.nal[h->out.i_nal].i_last_mb = h->sh.i_last_mb;
 
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
     {
         x264_cabac_encode_flush( h, &h->cabac );
         h->out.bs.p = h->cabac.p;
     }
+#endif
+#if CABAC_YES && CABAC_NO
     else
     {
 #endif
+#if CABAC_NO
         if( i_skip > 0 )
             bs_write_ue( &h->out.bs, i_skip );  /* last skip run */
         /* rbsp_slice_trailing_bits */
         bs_rbsp_trailing( &h->out.bs );
         bs_flush( &h->out.bs );
-#if CABAC
+#endif
+#if CABAC_YES && CABAC_NO
     }
 #endif
     if( nal_end( h ) )

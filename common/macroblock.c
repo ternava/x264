@@ -268,7 +268,7 @@ int x264_macroblock_cache_allocate( x264_t *h )
     /* all coeffs */
     PREALLOC( h->mb.non_zero_count, i_mb_count * 48 * sizeof(uint8_t) );
 
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
     {
         PREALLOC( h->mb.skipbp, i_mb_count * sizeof(int8_t) );
@@ -810,7 +810,7 @@ static ALWAYS_INLINE void macroblock_cache_load_neighbours( x264_t *h, int mb_x,
                 x264_prefetch( h->mb.intra4x4_pred_mode[top] );
                 x264_prefetch( &h->mb.non_zero_count[top][12] );
                 x264_prefetch( &h->mb.mb_transform_size[top] );
-#if CABAC
+#if CABAC_YES
                 if( h->param.b_cabac )
                     x264_prefetch( &h->mb.skipbp[top] );
 #endif
@@ -899,7 +899,7 @@ static ALWAYS_INLINE void macroblock_cache_load( x264_t *h, int mb_x, int mb_y, 
              * once every 4 MBs, so one extra prefetch is worthwhile */
             x264_prefetch( &h->mb.mv[l][top_4x4+4] );
             x264_prefetch( &h->mb.ref[l][top_8x8-1] );
-#if CABAC
+#if CABAC_YES
             if( h->param.b_cabac )
                 x264_prefetch( &h->mb.mvd[l][top] );
 #endif
@@ -1176,7 +1176,7 @@ static ALWAYS_INLINE void macroblock_cache_load( x264_t *h, int mb_x, int mb_y, 
             }
         }
 
-#if CABAC
+#if CABAC_YES
         if( h->param.b_cabac )
         {
             uint8_t (*mvd)[8][2] = h->mb.mvd[l];
@@ -1285,7 +1285,7 @@ static ALWAYS_INLINE void macroblock_cache_load( x264_t *h, int mb_x, int mb_y, 
             h->mb.b_allow_skip = 0;
     }
 
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
     {
         if( b_mbaff )
@@ -1321,7 +1321,7 @@ static ALWAYS_INLINE void macroblock_cache_load( x264_t *h, int mb_x, int mb_y, 
     {
         h->mb.bipred_weight = h->mb.bipred_weight_buf[MB_INTERLACED][MB_INTERLACED&(mb_y&1)];
         h->mb.dist_scale_factor = h->mb.dist_scale_factor_buf[MB_INTERLACED][MB_INTERLACED&(mb_y&1)];
-    #if CABAC
+#if CABAC_YES
         if( h->param.b_cabac )
         {
             uint8_t skipbp;
@@ -1343,7 +1343,7 @@ static ALWAYS_INLINE void macroblock_cache_load( x264_t *h, int mb_x, int mb_y, 
             h->mb.cache.skip[x264_scan8[0] - 8] = skipbp & 0x4;
             h->mb.cache.skip[x264_scan8[4] - 8] = skipbp & 0x8;
         }
-    #endif
+#endif
     }
 
     if( h->sh.i_type == SLICE_TYPE_P )
@@ -1394,9 +1394,9 @@ static void macroblock_deblock_strength_mbaff( x264_t *h, uint8_t (*bs)[8][4] )
             int nnz_this = h->mb.cache.non_zero_count[x264_scan8[0]+8*(i>>1)];
             int nnz_left = nnz[left][3 + 4*off[i]];
             if( 
-    #if CABAC
+#if CABAC_NO || CABAC_YES
                 !h->param.b_cabac && 
-    #endif
+#endif
                 h->pps->b_transform_8x8_mode )
             {
                 int j = off[i]&~1;
@@ -1436,9 +1436,9 @@ static void macroblock_deblock_strength_mbaff( x264_t *h, uint8_t (*bs)[8][4] )
                 CP32( nnz_top, &nnz[mbn_xy][3*4] );
 
                 if( 
-    #if CABAC
+#if CABAC_NO || CABAC_YES
                     !h->param.b_cabac && 
-    #endif
+#endif
                     h->pps->b_transform_8x8_mode && h->mb.mb_transform_size[mbn_xy] )
                 {
                     nnz_top[0] = nnz_top[1] = M16( &nnz[mbn_xy][ 8] ) || M16( &nnz[mbn_xy][12] );
@@ -1587,7 +1587,7 @@ void x264_macroblock_deblock_strength( x264_t *h )
 
     /* Munge NNZ for cavlc + 8x8dct */
     if( 
-#if CABAC
+#if CABAC_NO || CABAC_YES
         !h->param.b_cabac && 
 #endif
         h->pps->b_transform_8x8_mode )
@@ -1769,12 +1769,10 @@ void x264_macroblock_cache_save( x264_t *h )
         h->mb.i_cbp_luma = 0xf;
         h->mb.cbp[i_mb_xy] = (h->mb.i_cbp_chroma << 4) | h->mb.i_cbp_luma | 0x1700;
         h->mb.b_transform_8x8 = 0;
+#if CABAC_YES || CABAC_NO
         for( int i = 0; i < 48; i++ )
-            h->mb.cache.non_zero_count[x264_scan8[i]] = 
-#if CABAC
-            h->param.b_cabac ? 1 : 
+            h->mb.cache.non_zero_count[x264_scan8[i]] = h->param.b_cabac ? 1 : 16;
 #endif
-            16;
     }
     else
     {
@@ -1856,7 +1854,7 @@ void x264_macroblock_cache_save( x264_t *h )
         }
     }
 
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
     {
         uint8_t (*mvd0)[2] = h->mb.mvd[0][i_mb_xy];

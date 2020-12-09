@@ -1427,7 +1427,7 @@ static void mb_analyse_inter_p8x8_mixed_ref( x264_t *h, x264_mb_analysis_t *a )
         /* If CABAC is on and we're not doing sub-8x8 analysis, the costs
            are effectively zero. */
         if( 
-#if CABAC
+#if CABAC_NO
             !h->param.b_cabac || 
 #endif
             (h->param.analyse.inter & X264_ANALYSE_PSUB8x8) )
@@ -1438,7 +1438,7 @@ static void mb_analyse_inter_p8x8_mixed_ref( x264_t *h, x264_mb_analysis_t *a )
                       a->l0.me8x8[2].cost + a->l0.me8x8[3].cost;
     /* P_8x8 ref0 has no ref cost */
     if( 
-#if CABAC
+#if CABAC_NO
         !h->param.b_cabac && 
 #endif
         !(a->l0.me8x8[0].i_ref | a->l0.me8x8[1].i_ref |
@@ -1455,7 +1455,7 @@ static void mb_analyse_inter_p8x8( x264_t *h, x264_mb_analysis_t *a )
      * don't bother analysing the dupes. */
     const int i_ref = h->mb.ref_blind_dupe == a->l0.me16x16.i_ref ? 0 : a->l0.me16x16.i_ref;
     const int i_ref_cost = 
-#if CABAC
+#if CABAC_YES
     h->param.b_cabac || 
 #endif
     i_ref ? REF_COST( 0, i_ref ) : 0;
@@ -1495,7 +1495,7 @@ static void mb_analyse_inter_p8x8( x264_t *h, x264_mb_analysis_t *a )
         /* mb type cost */
         m->cost += i_ref_cost;
         if( 
-#if CABAC
+#if CABAC_NO
             !h->param.b_cabac || 
 #endif
             (h->param.analyse.inter & X264_ANALYSE_PSUB8x8) )
@@ -1506,7 +1506,7 @@ static void mb_analyse_inter_p8x8( x264_t *h, x264_mb_analysis_t *a )
                       a->l0.me8x8[2].cost + a->l0.me8x8[3].cost;
     /* theoretically this should include 4*ref_cost,
      * but 3 seems a better approximation of cabac. */
-#if CABAC
+#if CABAC_YES
     if( h->param.b_cabac )
         a->l0.i_cost8x8 -= i_ref_cost;
 #endif
