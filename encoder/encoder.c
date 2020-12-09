@@ -346,20 +346,10 @@ static void slice_header_write( bs_t *s, x264_slice_header_t *sh, int i_nal_ref_
             }
         }
     }
-
-    if( 
 #if CABAC_YES
-        sh->pps->b_cabac
-#endif
-#if CABAC_YES && CABAC_NO
-        &&
-#endif
-#if CABAC_NO
-        sh->i_type
-#endif
-         != SLICE_TYPE_I )
+    if( sh->pps->b_cabac && sh->i_type != SLICE_TYPE_I )
         bs_write_ue( s, sh->i_cabac_init_idc );
-
+#endif
     bs_write_se( s, sh->i_qp_delta );      /* slice qp delta */
 
     if( sh->pps->b_deblocking_filter_control )
@@ -381,17 +371,11 @@ static int bitstream_check_buffer_internal( x264_t *h, int size,
 #endif
         int i_nal )
 {
-    if(
+    if( 
 #if CABAC_YES
-       ( b_cabac && (h->cabac.p_end - h->cabac.p < size))
+        ( b_cabac && (h->cabac.p_end - h->cabac.p < size)) ||
 #endif
-#if CABAC_YES && CABAC_NO
-         ||
-#endif
-#if CABAC_NO
-        (h->out.bs.p_end - h->out.bs.p < size)
-#endif
-         )
+         (h->out.bs.p_end - h->out.bs.p < size) )
     {
         if( size > INT_MAX - h->out.i_bitstream )
             return -1;
@@ -423,25 +407,20 @@ static int bitstream_check_buffer_internal( x264_t *h, int size,
     return 0;
 }
 
+#if CABAC_YES || CABAC_NO
 static int bitstream_check_buffer( x264_t *h )
 {
     int max_row_size = (2500 << SLICE_MBAFF) * h->mb.i_mb_width;
-    return bitstream_check_buffer_internal( h, max_row_size, 
-#if CABAC_YES || CABAC_NO
-    h->param.b_cabac,
-#endif
-     h->out.i_nal );
+    return bitstream_check_buffer_internal( h, max_row_size, h->param.b_cabac, h->out.i_nal );
 }
-
+#endif
+#if CABAC_YES || CABAC_NO
 static int bitstream_check_buffer_filler( x264_t *h, int filler )
 {
     filler += 32; // add padding for safety
-    return bitstream_check_buffer_internal( h, filler, 
-#if CABAC_YES || CABAC_NO
-    0, 
-#endif
-    -1 );
+    return bitstream_check_buffer_internal( h, filler, 0, -1 );
 }
+#endif
 
 #if HAVE_THREAD
 static void encoder_thread_init( x264_t *h )
