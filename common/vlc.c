@@ -30,6 +30,7 @@
 vlc_large_t x264_level_token[7][LEVEL_TABLE_SIZE];
 uint32_t x264_run_before[1<<16];
 
+#if CABAC_NO
 void x264_cavlc_init( x264_t *h )
 {
     for( int i_suffix = 0; i_suffix < 7; i_suffix++ )
@@ -98,3 +99,4 @@ void x264_cavlc_init( x264_t *h )
         x264_run_before[i] = (bits << 5) + size;
     }
 }
+#endif

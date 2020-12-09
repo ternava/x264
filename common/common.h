@@ -138,10 +138,14 @@
 #define x264_log x264_template(log)
 void x264_log( x264_t *h, int i_level, const char *psz_fmt, ... );
 
+#if CABAC_NO
 #define x264_cavlc_init x264_template(cavlc_init)
 void x264_cavlc_init( x264_t *h );
+#endif
+#if CABAC_YES
 #define x264_cabac_init x264_template(cabac_init)
 void x264_cabac_init( x264_t *h );
+#endif
 
 static ALWAYS_INLINE pixel x264_clip_pixel( int x )
 {

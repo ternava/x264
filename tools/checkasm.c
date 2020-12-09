@@ -2706,7 +2706,9 @@ name##fail:
     if( cpu_ref || run_cabac_decision_c == run_cabac_decision_asm )
         return ret;
     ok = 1; used_asm = 0;
+#if CABAC_YES
     x264_cabac_init( &h );
+#endif
 
     set_func_name( "cabac_encode_decision" );
     memcpy( buf4, buf3, 0x1000 );

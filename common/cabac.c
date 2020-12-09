@@ -29,6 +29,7 @@
 
 static uint8_t cabac_contexts[4][QP_MAX_SPEC+1][1024];
 
+#if CABAC_YES
 void x264_cabac_init( x264_t *h )
 {
     int ctx_count = CHROMA444 ? 1024 : 460;
@@ -44,6 +45,7 @@ void x264_cabac_init( x264_t *h )
             }
     }
 }
+#endif
 
 void x264_cabac_context_init( x264_t *h, x264_cabac_t *cb, int i_slice_type, int i_qp, int i_model )
 {
