@@ -391,13 +391,7 @@ static void print_version_info( void )
 
 REALIGN_STACK int main( int argc, char **argv )
 {
-    argc = 5;
-argv[0] = "x264"; 
-argv[1] = ""; 
-argv[2] = "benchs/inputs/original_videos_LyricVideo_360P_LyricVideo_360P-5e87.mkv"; 
-argv[3] = "-o"; 
-argv[4] = "o1.mkv"; 
-
+    // OVERRIDE_MAIN_ARGUMENTS
 
 
 
