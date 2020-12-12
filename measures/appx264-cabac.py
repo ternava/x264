@@ -40,9 +40,9 @@ def extract_video_metadata(exif_exe, output_video):
     size_data.append(show_metadata)
     video_metadata.check_returncode()
 
-compilex264()
+#compilex264()
 
-rmv_exe = "./measures/exe/x264"
+rmv_exe = "./x264"
 lst_presets = ["--preset=%s" % p for p in ("ultrafast",
                                   "superfast",
                                   "veryfast",
