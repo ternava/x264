@@ -1426,24 +1426,22 @@ static void mb_analyse_inter_p8x8_mixed_ref( x264_t *h, x264_mb_analysis_t *a )
 
         /* If CABAC is on and we're not doing sub-8x8 analysis, the costs
            are effectively zero. */
-        if( 
-#if CABAC_NO
-            !h->param.b_cabac || 
-#endif
+#if CABAC_YES || CABAC_NO
+        if( !h->param.b_cabac || 
             (h->param.analyse.inter & X264_ANALYSE_PSUB8x8) )
             l0m->cost += a->i_lambda * i_sub_mb_p_cost_table[D_L0_8x8];
+#endif
     }
 
     a->l0.i_cost8x8 = a->l0.me8x8[0].cost + a->l0.me8x8[1].cost +
                       a->l0.me8x8[2].cost + a->l0.me8x8[3].cost;
     /* P_8x8 ref0 has no ref cost */
-    if( 
 #if CABAC_NO
-        !h->param.b_cabac && 
-#endif
+    if( !h->param.b_cabac && 
         !(a->l0.me8x8[0].i_ref | a->l0.me8x8[1].i_ref |
                                a->l0.me8x8[2].i_ref | a->l0.me8x8[3].i_ref) )
         a->l0.i_cost8x8 -= REF_COST( 0, 0 ) * 4;
+#endif
     M32( h->mb.i_sub_partition ) = D_L0_8x8 * 0x01010101;
 }
 #endif
@@ -1454,11 +1452,9 @@ static void mb_analyse_inter_p8x8( x264_t *h, x264_mb_analysis_t *a )
      * reference frame flags.  Thus, if we're not doing mixedrefs, just
      * don't bother analysing the dupes. */
     const int i_ref = h->mb.ref_blind_dupe == a->l0.me16x16.i_ref ? 0 : a->l0.me16x16.i_ref;
-    const int i_ref_cost = 
-#if CABAC_YES
-    h->param.b_cabac || 
+#if CABAC_YES || CABAC_NO
+    const int i_ref_cost = h->param.b_cabac || i_ref ? REF_COST( 0, i_ref ) : 0;
 #endif
-    i_ref ? REF_COST( 0, i_ref ) : 0;
     pixel **p_fenc = h->mb.pic.p_fenc;
     int i_mvc;
     int16_t (*mvc)[2] = a->l0.mvc[i_ref];
@@ -1494,12 +1490,11 @@ static void mb_analyse_inter_p8x8( x264_t *h, x264_mb_analysis_t *a )
 
         /* mb type cost */
         m->cost += i_ref_cost;
-        if( 
-#if CABAC_NO
-            !h->param.b_cabac || 
-#endif
+#if CABAC_NO || CABAC_YES
+        if( !h->param.b_cabac || 
             (h->param.analyse.inter & X264_ANALYSE_PSUB8x8) )
             m->cost += a->i_lambda * i_sub_mb_p_cost_table[D_L0_8x8];
+#endif
     }
 
     a->l0.i_cost8x8 = a->l0.me8x8[0].cost + a->l0.me8x8[1].cost +
