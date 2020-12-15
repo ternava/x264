@@ -424,7 +424,9 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
     param->rc.f_qblur = 0.5;
     param->rc.f_complexity_blur = 20;
     param->rc.i_zones = 0;
+#if MBTREE_YES
     param->rc.b_mb_tree = 1;
+#endif
 
     /* Log */
     param->pf_log = x264_log_default;
@@ -527,7 +529,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->analyse.i_trellis = 0;
 #endif
         param->i_bframe_adaptive = X264_B_ADAPT_NONE;
+#if MBTREE_NO
         param->rc.b_mb_tree = 0;
+#endif
         param->analyse.i_weighted_pred = X264_WEIGHTP_NONE;
         param->analyse.b_weighted_bipred = 0;
         param->rc.i_lookahead = 0;
@@ -544,7 +548,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
 #if TRELLIS
         param->analyse.i_trellis = 0;
 #endif
+#if MBTREE_NO
         param->rc.b_mb_tree = 0;
+#endif
         param->analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
         param->rc.i_lookahead = 0;
     }
@@ -729,7 +735,9 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
             param->i_bframe = 0;
             param->b_sliced_threads = 1;
             param->b_vfr_input = 0;
+#if MBTREE_NO
             param->rc.b_mb_tree = 0;
+#endif
         }
         else if( len == 6 && !strncasecmp( tune, "touhou", 6 ) )
         {
@@ -1397,8 +1405,10 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
     }
     OPT("qcomp")
         p->rc.f_qcompress = atof(value);
+#if MBTREE_YES || MBTREE_NO
     OPT("mbtree")
         p->rc.b_mb_tree = atobool(value);
+#endif
     OPT("qblur")
         p->rc.f_qblur = atof(value);
     OPT2("cplxblur", "cplx-blur")
@@ -1552,12 +1562,14 @@ char *x264_param2string( x264_param_t *p, int b_res )
     s += sprintf( s, " keyint_min=%d scenecut=%d intra_refresh=%d",
                   p->i_keyint_min, p->i_scenecut_threshold, p->b_intra_refresh );
 
+#if MBTREE_YES || MBTREE_NO
     if( p->rc.b_mb_tree || p->rc.i_vbv_buffer_size )
         s += sprintf( s, " rc_lookahead=%d", p->rc.i_lookahead );
 
     s += sprintf( s, " rc=%s mbtree=%d", p->rc.i_rc_method == X264_RC_ABR ?
                                ( p->rc.b_stat_read ? "2pass" : p->rc.i_vbv_max_bitrate == p->rc.i_bitrate ? "cbr" : "abr" )
                                : p->rc.i_rc_method == X264_RC_CRF ? "crf" : "cqp", p->rc.b_mb_tree );
+#endif
     if( p->rc.i_rc_method == X264_RC_ABR || p->rc.i_rc_method == X264_RC_CRF )
     {
         if( p->rc.i_rc_method == X264_RC_CRF )
@@ -1592,8 +1604,10 @@ char *x264_param2string( x264_param_t *p, int b_res )
     if( !(p->rc.i_rc_method == X264_RC_CQP && p->rc.i_qp_constant == 0) )
     {
         s += sprintf( s, " ip_ratio=%.2f", p->rc.f_ip_factor );
+#if MBTREE_NO
         if( p->i_bframe && !p->rc.b_mb_tree )
             s += sprintf( s, " pb_ratio=%.2f", p->rc.f_pb_factor );
+#endif
         s += sprintf( s, " aq=%d", p->rc.i_aq_mode );
         if( p->rc.i_aq_mode )
             s += sprintf( s, ":%.2f", p->rc.f_aq_strength );

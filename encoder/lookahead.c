@@ -132,8 +132,10 @@ int x264_lookahead_init( x264_t *h, int i_slicetype_length )
         h->thread[i]->lookahead = look;
 
     look->i_last_keyframe = - h->param.i_keyint_max;
+#if MBTREE_YES || MBTREE_NO
     look->b_analyse_keyframe = (h->param.rc.b_mb_tree || (h->param.rc.i_vbv_buffer_size && h->param.rc.i_lookahead))
                                && !h->param.rc.b_stat_read;
+#endif
     look->i_slicetype_length = i_slicetype_length;
 
     /* init frame lists */

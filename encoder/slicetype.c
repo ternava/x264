@@ -821,7 +821,9 @@ static void slicetype_slice_cost( x264_slicetype_slice_t *s )
 
     /* The edge mbs seem to reduce the predictive quality of the
      * whole frame's score, but are needed for a spatial distribution. */
+#if MBTREE_YES || MBTREE_NO
     int do_edges = h->param.rc.b_mb_tree || h->param.rc.i_vbv_buffer_size || h->mb.i_mb_width <= 2 || h->mb.i_mb_height <= 2;
+#endif
 
     int start_y = X264_MIN( h->i_threadslice_end - 1, h->mb.i_mb_height - 2 + do_edges );
     int end_y = X264_MAX( h->i_threadslice_start, 1 - do_edges );
@@ -1189,10 +1191,16 @@ static int vbv_frame_cost( x264_t *h, x264_mb_analysis_t *a, x264_frame_t **fram
     int cost = slicetype_frame_cost( h, a, frames, p0, p1, b );
     if( h->param.rc.i_aq_mode )
     {
+#if MBTREE_YES
         if( h->param.rc.b_mb_tree )
             return slicetype_frame_cost_recalculate( h, frames, p0, p1, b );
+#endif
+#if MBTREE_YES && MBTREE_NO
         else
+#endif
+#if MBTREE_NO
             return frames[b]->i_cost_est_aq[b-p0][p1-b];
+#endif
     }
     return cost;
 }
@@ -1498,8 +1506,10 @@ void x264_slicetype_analyse( x264_t *h, int intra_minigop )
 
     if( !framecnt )
     {
+#if MBTREE_YES
         if( h->param.rc.b_mb_tree )
             macroblock_tree( h, &a, frames, 0, keyframe );
+#endif
         return;
     }
 
@@ -1510,11 +1520,8 @@ void x264_slicetype_analyse( x264_t *h, int intra_minigop )
      * there will be significant visual artifacts if the frames just before
      * go down in quality due to being referenced less, despite it being
      * more RD-optimal. */
-    if( (
-#if PSY
-        h->param.analyse.b_psy &&
-#endif
-         h->param.rc.b_mb_tree) || b_vbv_lookahead )
+#if MBTREE_YES || MBTREE_NO || PSY
+    if( ( h->param.analyse.b_psy && h->param.rc.b_mb_tree) || b_vbv_lookahead )
         num_frames = framecnt;
     else if( h->param.b_open_gop && num_frames < framecnt )
         num_frames++;
@@ -1523,6 +1530,7 @@ void x264_slicetype_analyse( x264_t *h, int intra_minigop )
         frames[1]->i_type = X264_TYPE_I;
         return;
     }
+#endif
 
     if( IS_X264_TYPE_AUTO_OR_I( frames[1]->i_type ) &&
         h->param.i_scenecut_threshold && scenecut( h, &a, frames, 0, 1, 1, orig_num_frames, i_max_search ) )
@@ -1679,8 +1687,10 @@ void x264_slicetype_analyse( x264_t *h, int intra_minigop )
 
     /* Perform the actual macroblock tree analysis.
      * Don't go farther than the maximum keyframe interval; this helps in short GOPs. */
+#if MBTREE_YES
     if( h->param.rc.b_mb_tree )
         macroblock_tree( h, &a, frames, X264_MIN(num_frames, h->param.i_keyint_max), keyframe );
+#endif
 
     /* Enforce keyframe limit. */
     if( !h->param.b_intra_refresh )
@@ -2000,15 +2010,22 @@ int x264_rc_analyse_slice( x264_t *h )
     cost = frames[b]->i_cost_est[b-p0][p1-b];
     assert( cost >= 0 );
 
+#if MBTREE_YES
     if( h->param.rc.b_mb_tree && !h->param.rc.b_stat_read )
     {
         cost = slicetype_frame_cost_recalculate( h, frames, p0, p1, b );
         if( b && h->param.rc.i_vbv_buffer_size )
             slicetype_frame_cost_recalculate( h, frames, b, b, b );
     }
+#endif
+#if MBTREE_YES && MBTREE_NO 
     /* In AQ, use the weighted score instead. */
-    else if( h->param.rc.i_aq_mode )
+    else 
+#endif
+#if MBTREE_NO
+    if( h->param.rc.i_aq_mode )
         cost = frames[b]->i_cost_est_aq[b-p0][p1-b];
+#endif
 
     h->fenc->i_row_satd = h->fenc->i_row_satds[b-p0][p1-b];
     h->fdec->i_row_satd = h->fdec->i_row_satds[b-p0][p1-b];

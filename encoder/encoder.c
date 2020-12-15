@@ -930,7 +930,9 @@ static int validate_parameters( x264_t *h, int b_open )
         h->param.rc.i_qp_min = x264_clip3( (int)(X264_MIN3( qp_p, qp_i, qp_b )), 0, QP_MAX );
         h->param.rc.i_qp_max = x264_clip3( (int)(X264_MAX3( qp_p, qp_i, qp_b ) + .999), 0, QP_MAX );
         h->param.rc.i_aq_mode = 0;
+#if MBTREE_NO
         h->param.rc.b_mb_tree = 0;
+#endif
         h->param.rc.i_bitrate = 0;
     }
     h->param.rc.i_qp_max = x264_clip3( h->param.rc.i_qp_max, 0, QP_MAX );
@@ -1091,14 +1093,20 @@ static int validate_parameters( x264_t *h, int b_open )
     }
 
     h->param.rc.f_qcompress = x264_clip3f( h->param.rc.f_qcompress, 0.0, 1.0 );
+#if MBTREE_NO
     if( h->param.i_keyint_max == 1 || h->param.rc.f_qcompress == 1 )
         h->param.rc.b_mb_tree = 0;
+#endif
+#if MBTREE_YES
     if( (!h->param.b_intra_refresh && h->param.i_keyint_max != X264_KEYINT_MAX_INFINITE) &&
         !h->param.rc.i_lookahead && h->param.rc.b_mb_tree )
     {
         x264_log( h, X264_LOG_WARNING, "lookaheadless mb-tree requires intra refresh or infinite keyint\n" );
+#if MBTREE_NO
         h->param.rc.b_mb_tree = 0;
+#endif
     }
+#endif
     if( b_open && h->param.rc.b_stat_read )
         h->param.rc.i_lookahead = 0;
 #if HAVE_THREAD
@@ -1229,11 +1237,13 @@ static int validate_parameters( x264_t *h, int b_open )
         2;
     h->param.analyse.i_chroma_qp_offset = x264_clip3(h->param.analyse.i_chroma_qp_offset, -12, 12);
     /* MB-tree requires AQ to be on, even if the strength is zero. */
+#if MBTREE_YES
     if( !h->param.rc.i_aq_mode && h->param.rc.b_mb_tree )
     {
         h->param.rc.i_aq_mode = 1;
         h->param.rc.f_aq_strength = 0;
     }
+#endif
 #if NR
     h->param.analyse.i_noise_reduction = x264_clip3( h->param.analyse.i_noise_reduction, 0, 1<<16 );
 #endif
@@ -1319,12 +1329,10 @@ static int validate_parameters( x264_t *h, int b_open )
         }
     }
 
-    if( !h->param.analyse.i_weighted_pred && h->param.rc.b_mb_tree
-#if PSY
-     && h->param.analyse.b_psy 
-#endif
-     )
+#if MBTREE_YES || PSY
+    if( !h->param.analyse.i_weighted_pred && h->param.rc.b_mb_tree && h->param.analyse.b_psy )
         h->param.analyse.i_weighted_pred = X264_WEIGHTP_FAKE;
+#endif
 
     if( h->i_thread_frames > 1 )
     {
@@ -1415,7 +1423,9 @@ static int validate_parameters( x264_t *h, int b_open )
     BOOLIFY( analyse.b_ssim );
     BOOLIFY( rc.b_stat_write );
     BOOLIFY( rc.b_stat_read );
+#if MBTREE_YES || MBTREE_NO
     BOOLIFY( rc.b_mb_tree );
+#endif
     BOOLIFY( rc.b_filler );
 #undef BOOLIFY
 
@@ -1617,8 +1627,10 @@ x264_t *x264_encoder_open( x264_param_t *param )
         h->frames.i_delay = X264_MAX(h->param.i_bframe,3)*4;
     else
         h->frames.i_delay = h->param.i_bframe;
+#if MBTREE_YES || MBTREE_NO
     if( h->param.rc.b_mb_tree || h->param.rc.i_vbv_buffer_size )
         h->frames.i_delay = X264_MAX( h->frames.i_delay, h->param.rc.i_lookahead );
+#endif
     i_slicetype_length = h->frames.i_delay;
     h->frames.i_delay += h->i_thread_frames - 1;
     h->frames.i_delay += h->param.i_sync_lookahead;
@@ -1628,6 +1640,7 @@ x264_t *x264_encoder_open( x264_param_t *param )
     h->frames.i_max_ref0 = h->param.i_frame_reference;
     h->frames.i_max_ref1 = X264_MIN( h->sps->vui.i_num_reorder_frames, h->param.i_frame_reference );
     h->frames.i_max_dpb  = h->sps->vui.i_max_dec_frame_buffering;
+#if MBTREE_YES || MBTREE_NO
     h->frames.b_have_lowres = !h->param.rc.b_stat_read
         && ( h->param.rc.i_rc_method == X264_RC_ABR
           || h->param.rc.i_rc_method == X264_RC_CRF
@@ -1635,6 +1648,7 @@ x264_t *x264_encoder_open( x264_param_t *param )
           || h->param.i_scenecut_threshold
           || h->param.rc.b_mb_tree
           || h->param.analyse.i_weighted_pred );
+#endif
     h->frames.b_have_lowres |= h->param.rc.b_stat_read && h->param.rc.i_vbv_buffer_size > 0;
     h->frames.b_have_sub8x8_esa = !!(h->param.analyse.inter & X264_ANALYSE_PSUB8x8);
 
@@ -3481,13 +3495,19 @@ int     x264_encoder_encode( x264_t *h,
                 fenc->i_pic_struct = PIC_STRUCT_PROGRESSIVE;
         }
 
+#if MBTREE_YES
         if( h->param.rc.b_mb_tree && h->param.rc.b_stat_read )
         {
             if( x264_macroblock_tree_read( h, fenc, pic_in->prop.quant_offsets ) )
                 return -1;
         }
+#endif
+#if MBTREE_YES && MBTREE_NO 
         else
+#endif
+#if MBTREE_NO
             x264_adaptive_quant_frame( h, fenc, pic_in->prop.quant_offsets );
+#endif
 
         if( pic_in->prop.quant_offsets_free )
             pic_in->prop.quant_offsets_free( pic_in->prop.quant_offsets );

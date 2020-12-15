@@ -1157,8 +1157,12 @@ static struct option long_options[] =
     { "pass",        required_argument, NULL, 'p' },
     { "stats",       required_argument, NULL, 0 },
     { "qcomp",       required_argument, NULL, 0 },
+#if MBTREE_YES
     { "mbtree",            no_argument, NULL, 0 },
+#endif
+#if MBTREE_NO
     { "no-mbtree",         no_argument, NULL, 0 },
+#endif
     { "qblur",       required_argument, NULL, 0 },
     { "cplxblur",    required_argument, NULL, 0 },
     { "zones",       required_argument, NULL, 0 },

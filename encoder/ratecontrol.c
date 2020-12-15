@@ -639,7 +639,9 @@ void x264_ratecontrol_init_reconfigurable( x264_t *h, int b_init )
         /* Arbitrary rescaling to make CRF somewhat similar to QP.
          * Try to compensate for MB-tree's effects as well. */
         double base_cplx = h->mb.i_mb_count * (h->param.i_bframe ? 120 : 80);
+#if MBTREE_YES || MBTREE_NO
         double mbtree_offset = h->param.rc.b_mb_tree ? (1.0-h->param.rc.f_qcompress)*13.5 : 0;
+#endif
         rc->rate_factor_constant = pow( base_cplx, 1 - rc->qcompress )
                                  / qp2qscale( h->param.rc.f_rf_constant + mbtree_offset + QP_BD_OFFSET );
     }
@@ -757,14 +759,19 @@ int x264_ratecontrol_new( x264_t *h )
         rc->fps = (float) h->param.i_fps_num / h->param.i_fps_den;
     else
         rc->fps = 25.0;
-
+#if MBTREE_YES
     if( h->param.rc.b_mb_tree )
     {
         h->param.rc.f_pb_factor = 1;
         rc->qcompress = 1;
     }
+#endif
+#if MBTREE_YES && MBTREE_NO
     else
+#endif
+#if MBTREE_NO
         rc->qcompress = h->param.rc.f_qcompress;
+#endif
 
     rc->bitrate = h->param.rc.i_bitrate * (h->param.i_avcintra_class ? 1024. : 1000.);
     rc->rate_tolerance = h->param.rc.f_rate_tolerance;
@@ -877,6 +884,7 @@ int x264_ratecontrol_new( x264_t *h )
             x264_log( h, X264_LOG_ERROR, "ratecontrol_init: can't open stats file\n" );
             return -1;
         }
+#if MBTREE_YES
         if( h->param.rc.b_mb_tree )
         {
             char *mbtree_stats_in = strcat_filename( h->param.rc.psz_stat_in, ".mbtree" );
@@ -890,6 +898,7 @@ int x264_ratecontrol_new( x264_t *h )
                 return -1;
             }
         }
+#endif
 
         /* check whether 1st pass options were compatible with current options */
         if( strncmp( stats_buf, "#options:", 9 ) )
@@ -908,16 +917,23 @@ int x264_ratecontrol_new( x264_t *h )
                 return -1;
             *stats_in = '\0';
             stats_in++;
+#if MBTREE_NO
             if( sscanf( opts, "#options: %dx%d", &i, &j ) != 2 )
             {
                 x264_log( h, X264_LOG_ERROR, "resolution specified in stats file not valid\n" );
                 return -1;
             }
-            else if( h->param.rc.b_mb_tree )
+#endif
+#if MBTREE_YES && MBTREE_NO
+            else 
+#endif
+#if MBTREE_YES
+            if( h->param.rc.b_mb_tree )
             {
                 rc->mbtree.srcdim[0] = i;
                 rc->mbtree.srcdim[1] = j;
             }
+#endif
             res_factor = (float)h->param.i_width * h->param.i_height / (i*j);
             /* Change in bits relative to resolution isn't quite linear on typical sources,
              * so we'll at least try to roughly approximate this effect. */
@@ -942,7 +958,9 @@ int x264_ratecontrol_new( x264_t *h )
             CMP_OPT_FIRST_PASS( "intra_refresh", h->param.b_intra_refresh );
             CMP_OPT_FIRST_PASS( "open_gop", h->param.b_open_gop );
             CMP_OPT_FIRST_PASS( "bluray_compat", h->param.b_bluray_compat );
+#if MBTREE_YES || MBTREE_NO
             CMP_OPT_FIRST_PASS( "mbtree", h->param.rc.b_mb_tree );
+#endif
 
             if( (p = strstr( opts, "interlaced=" )) )
             {
@@ -987,8 +1005,10 @@ int x264_ratecontrol_new( x264_t *h )
                 return -1;
             }
 
+#if MBTREE_YES || MBTREE_NO
             if( (h->param.rc.b_mb_tree || h->param.rc.i_vbv_buffer_size) && ( p = strstr( opts, "rc_lookahead=" ) ) && sscanf( p, "rc_lookahead=%d", &i ) )
                 h->param.rc.i_lookahead = i;
+#endif
         }
 
         /* find number of pics */
@@ -1171,6 +1191,7 @@ parse_error:
         if( p )
             fprintf( rc->p_stat_file_out, "#options: %s\n", p );
         x264_free( p );
+#if MBTREE_YES
         if( h->param.rc.b_mb_tree && !h->param.rc.b_stat_read )
         {
             rc->psz_mbtree_stat_file_tmpname = strcat_filename( h->param.rc.psz_stat_out, ".mbtree.temp" );
@@ -1185,8 +1206,10 @@ parse_error:
                 return -1;
             }
         }
+#endif
     }
 
+#if MBTREE_YES
     if( h->param.rc.b_mb_tree && (h->param.rc.b_stat_read || h->param.rc.b_stat_write) )
     {
         if( !h->param.rc.b_stat_read )
@@ -1197,6 +1220,7 @@ parse_error:
         if( macroblock_tree_rescale_init( h, rc ) < 0 )
             return -1;
     }
+#endif    
 
     for( int i = 0; i<h->param.i_threads; i++ )
     {
@@ -1347,7 +1371,9 @@ void x264_ratecontrol_summary( x264_t *h )
     if( rc->b_abr && h->param.rc.i_rc_method == X264_RC_ABR && rc->cbr_decay > .9999 )
     {
         double base_cplx = h->mb.i_mb_count * (h->param.i_bframe ? 120 : 80);
+#if MBTREE_YES || MBTREE_NO
         double mbtree_offset = h->param.rc.b_mb_tree ? (1.0-h->param.rc.f_qcompress)*13.5 : 0;
+#endif
         x264_log( h, X264_LOG_INFO, "final ratefactor: %.2f\n",
                   qscale2qp( pow( base_cplx, 1 - rc->qcompress )
                              * rc->cplxr_sum / rc->wanted_bits_window ) - mbtree_offset - QP_BD_OFFSET );
@@ -1792,7 +1818,9 @@ int x264_ratecontrol_slice_type( x264_t *h, int frame_num )
                 h->thread[i]->param.rc.b_stat_read = 0;
                 h->thread[i]->param.i_bframe_adaptive = 0;
                 h->thread[i]->param.i_scenecut_threshold = 0;
+#if MBTREE_NO
                 h->thread[i]->param.rc.b_mb_tree = 0;
+#endif
                 if( h->thread[i]->param.i_bframe > 1 )
                     h->thread[i]->param.i_bframe = 1;
             }
@@ -1896,6 +1924,7 @@ int x264_ratecontrol_end( x264_t *h, int bits, int *filler )
             goto fail;
 
         /* Don't re-write the data in multi-pass mode. */
+#if MBTREE_YES
         if( h->param.rc.b_mb_tree && h->fenc->b_kept_as_ref && !h->param.rc.b_stat_read )
         {
             uint8_t i_type = h->sh.i_type;
@@ -1905,6 +1934,7 @@ int x264_ratecontrol_end( x264_t *h, int bits, int *filler )
             if( fwrite( rc->mbtree.qp_buffer[0], sizeof(uint16_t), h->mb.i_mb_count, rc->p_mbtree_stat_file_out ) < (unsigned)h->mb.i_mb_count )
                 goto fail;
         }
+#endif
     }
 
     if( rc->b_abr )
@@ -2000,13 +2030,19 @@ static double get_qscale(x264_t *h, ratecontrol_entry_t *rce, double rate_factor
     x264_ratecontrol_t *rcc= h->rc;
     x264_zone_t *zone = get_zone( h, frame_num );
     double q;
+#if MBTREE_YES
     if( h->param.rc.b_mb_tree )
     {
         double timescale = (double)h->sps->vui.i_num_units_in_tick / h->sps->vui.i_time_scale;
         q = pow( BASE_FRAME_DURATION / CLIP_DURATION(rce->i_duration * timescale), 1 - h->param.rc.f_qcompress );
     }
+#endif
+#if MBTREE_YES && MBTREE_NO
     else
+#endif
+#if MBTREE_NO
         q = pow( rce->blurred_complexity, 1 - rcc->qcompress );
+#endif
 
     // avoid NaN's in the rc_eq
     if( !isfinite(q) || rce->tex_bits + rce->mv_bits == 0 )

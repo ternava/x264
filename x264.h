@@ -44,6 +44,7 @@ extern "C" {
 #include <stdarg.h>
 
 #include "x264_config.h"
+#include "removeoption.h"
 
 #define X264_BUILD 161
 
@@ -367,7 +368,6 @@ typedef struct x264_param_t
     int         i_deblocking_filter_alphac0;    /* [-6, 6] -6 light filter, 6 strong */
     int         i_deblocking_filter_beta;       /* [-6, 6]  idem */
 
-#include "removeoption.h"
 #if CABAC_YES || CABAC_NO
     int         b_cabac;
 #endif
@@ -457,7 +457,9 @@ typedef struct x264_param_t
 
         int         i_aq_mode;      /* psy adaptive QP. (X264_AQ_*) */
         float       f_aq_strength;
+#if MBTREE_YES || MBTREE_NO
         int         b_mb_tree;      /* Macroblock-tree ratecontrol. */
+#endif
         int         i_lookahead;
 
         /* 2pass */
