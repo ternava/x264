@@ -255,13 +255,11 @@ int x264_cqm_init( x264_t *h )
         if( max_qp_err >= h->param.rc.i_qp_min )
             h->param.rc.i_qp_min = max_qp_err+1;
         /* If long level-codes aren't allowed, we need to allow QP high enough to avoid them. */
-        if( 
 #if CABAC_NO
-            !h->param.b_cabac && 
-#endif
-            h->sps->i_profile_idc < PROFILE_HIGH )
+        if( !h->param.b_cabac && h->sps->i_profile_idc < PROFILE_HIGH )
             while( h->chroma_qp_table[SPEC_QP(h->param.rc.i_qp_max)] <= 12 || h->param.rc.i_qp_max <= 12 )
                 h->param.rc.i_qp_max++;
+#endif
         if( h->param.rc.i_qp_min > h->param.rc.i_qp_max )
         {
             x264_log( h, X264_LOG_ERROR, "Impossible QP constraints for CQM (min=%d, max=%d)\n", h->param.rc.i_qp_min, h->param.rc.i_qp_max );
