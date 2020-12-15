@@ -16,11 +16,14 @@
 #ifndef MBTREE_YES
 #define MBTREE_YES 1
 #endif
+#ifndef PSY_YES
+#define PSY_YES 1
+#endif
+#ifndef PSY_NO
+#define PSY_NO 1
+#endif
 #ifndef TRELLIS
 #define TRELLIS 1
-#endif
-#ifndef PSY
-#define PSY 1
 #endif
 #ifndef PSY_RD
 #define PSY_RD 1

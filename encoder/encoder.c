@@ -906,7 +906,7 @@ static int validate_parameters( x264_t *h, int b_open )
 #if NR
         h->param.analyse.i_noise_reduction = 0;
 #endif
-#if PSY
+#if PSY_NO
         h->param.analyse.b_psy = 0;
 #endif
         h->param.i_bframe = 0;
@@ -1171,14 +1171,17 @@ static int validate_parameters( x264_t *h, int b_open )
     {
         char *s = NULL;
 
-#if PSY
+#if PSY_YES
         if( h->param.analyse.b_psy )
         {
             s = h->param.analyse.b_psnr ? "psnr" : "ssim";
             x264_log( h, X264_LOG_WARNING, "--%s used with psy on: results will be invalid!\n", s );
         }
+#endif
+#if PSY_YES && PSY_NO
         else
 #endif
+#if PSY_NO
          if( !h->param.rc.i_aq_mode && h->param.analyse.b_ssim )
         {
             x264_log( h, X264_LOG_WARNING, "--ssim used with AQ off: results will be invalid!\n" );
@@ -1191,9 +1194,10 @@ static int validate_parameters( x264_t *h, int b_open )
         }
         if( s )
             x264_log( h, X264_LOG_WARNING, "--tune %s should be used if attempting to benchmark %s!\n", s, s );
+#endif
     }
 
-#if PSY
+#if PSY_NO
     if( !h->param.analyse.b_psy )
     {
         h->param.analyse.f_psy_rd = 0;
@@ -1210,12 +1214,10 @@ static int validate_parameters( x264_t *h, int b_open )
 #endif
     h->param.analyse.i_chroma_qp_offset = x264_clip3(h->param.analyse.i_chroma_qp_offset, -32, 32);
     /* In 4:4:4 mode, chroma gets twice as much resolution, so we can halve its quality. */
-    if( b_open && i_csp >= X264_CSP_I444 && i_csp < X264_CSP_BGR
-#if PSY
-    && h->param.analyse.b_psy
-#endif
-     )
+#if PSY_YES
+    if( b_open && i_csp >= X264_CSP_I444 && i_csp < X264_CSP_BGR && h->param.analyse.b_psy )
         h->param.analyse.i_chroma_qp_offset += 6;
+#endif
     /* Psy RDO increases overall quantizers to improve the quality of luma--this indirectly hurts chroma quality */
     /* so we lower the chroma QP offset to compensate */
     if( b_open 
@@ -1329,7 +1331,7 @@ static int validate_parameters( x264_t *h, int b_open )
         }
     }
 
-#if MBTREE_YES || PSY
+#if MBTREE_YES || PSY_YES
     if( !h->param.analyse.i_weighted_pred && h->param.rc.b_mb_tree && h->param.analyse.b_psy )
         h->param.analyse.i_weighted_pred = X264_WEIGHTP_FAKE;
 #endif
@@ -1416,7 +1418,7 @@ static int validate_parameters( x264_t *h, int b_open )
 #endif
     BOOLIFY( analyse.b_fast_pskip );
     BOOLIFY( analyse.b_dct_decimate );
-#if PSY
+#if PSY_YES || PSY_NO
     BOOLIFY( analyse.b_psy );
 #endif
     BOOLIFY( analyse.b_psnr );

@@ -254,7 +254,7 @@ static void mb_analyse_load_costs( x264_t *h, x264_mb_analysis_t *a )
 
 static void mb_analyse_init_qp( x264_t *h, x264_mb_analysis_t *a, int qp )
 {
-#if PSY || TRELLIS
+#if TRELLIS
     int effective_chroma_qp = h->chroma_qp_table[SPEC_QP(qp)] + X264_MAX( qp - QP_MAX_SPEC, 0 );
 #endif
     a->i_lambda = x264_lambda_tab[qp];
@@ -272,7 +272,7 @@ static void mb_analyse_init_qp( x264_t *h, x264_mb_analysis_t *a, int qp )
 #endif
     h->mb.i_psy_rd_lambda = a->i_lambda;
     /* Adjusting chroma lambda based on QP offset hurts PSNR but improves visual quality. */
-#if PSY
+#if PSY_YES || PSY_NO
     int chroma_offset_idx = X264_MIN( qp-effective_chroma_qp+12, MAX_CHROMA_LAMBDA_OFFSET );
     h->mb.i_chroma_lambda2_offset = h->param.analyse.b_psy ? x264_chroma_lambda2_offset_tab[chroma_offset_idx] : 256;
 #endif
@@ -3016,7 +3016,7 @@ intra_analysis:
         analysis.b_try_skip = 0;
         if( analysis.b_force_intra )
         {
-#if PSY
+#if PSY_NO
             if( !h->param.analyse.b_psy )
             {
                 mb_analyse_init_qp( h, &analysis, X264_MAX( h->mb.i_qp - h->mb.ip_offset, h->param.rc.i_qp_min ) );

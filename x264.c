@@ -1124,8 +1124,10 @@ static struct option long_options[] =
 #if PSY_RD
     { "psy-rd",      required_argument, NULL, 0 },
 #endif
-#if PSY
+#if PSY_NO
     { "no-psy",            no_argument, NULL, 0 },
+#endif
+#if PSY_YES
     { "psy",               no_argument, NULL, 0 },
 #endif
 #if MIXED_REFS_YES

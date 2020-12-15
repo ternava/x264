@@ -442,7 +442,7 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
 #if PSY_RD
     param->analyse.f_psy_rd = 1.0;
 #endif
-#if PSY
+#if PSY_YES
     param->analyse.b_psy = 1;
 #endif
 #if PSY_RD
@@ -707,7 +707,7 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
         {
             if( psy_tuning_used++ ) goto psy_failure;
             param->rc.i_aq_mode = X264_AQ_NONE;
-#if PSY
+#if PSY_NO
             param->analyse.b_psy = 0;
 #endif
         }
@@ -715,7 +715,7 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
         {
             if( psy_tuning_used++ ) goto psy_failure;
             param->rc.i_aq_mode = X264_AQ_AUTOVARIANCE;
-#if PSY
+#if PSY_NO
             param->analyse.b_psy = 0;
 #endif
         }
@@ -1325,7 +1325,7 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
         }
     }
 #endif
-#if PSY
+#if PSY_YES || PSY_NO
     OPT("psy")
         p->analyse.b_psy = atobool(value);
 #endif
@@ -1502,8 +1502,10 @@ char *x264_param2string( x264_param_t *p, int b_res )
     s += sprintf( s, " analyse=%#x:%#x", p->analyse.intra, p->analyse.inter );
     s += sprintf( s, " me=%s", x264_motion_est_names[ p->analyse.i_me_method ] );
     s += sprintf( s, " subme=%d", p->analyse.i_subpel_refine );
-#if PSY
+#if PSY_YES || PSY_NO
     s += sprintf( s, " psy=%d", p->analyse.b_psy );
+#endif
+#if PSY_YES
     if( p->analyse.b_psy )
         s += sprintf( s, " psy_rd=%.2f:%.2f", p->analyse.f_psy_rd, p->analyse.f_psy_trellis );
 #endif

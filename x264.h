@@ -421,7 +421,9 @@ typedef struct x264_param_t
         int          i_noise_reduction; /* adaptive pseudo-deadzone */
         float        f_psy_rd; /* Psy RD strength */
         float        f_psy_trellis; /* Psy trellis strength */
+#if PSY_YES || PSY_NO
         int          b_psy; /* Toggle all psy optimizations */
+#endif
 
         int          b_mb_info;            /* Use input mb_info data in x264_picture_t */
         int          b_mb_info_update; /* Update the values in mb_info according to the results of encoding. */
