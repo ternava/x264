@@ -1140,9 +1140,9 @@ static int validate_parameters( x264_t *h, int b_open )
     if( h->param.analyse.i_me_method == X264_ME_TESA &&
         (h->mb.b_lossless || h->param.analyse.i_subpel_refine <= 1) )
         h->param.analyse.i_me_method = X264_ME_ESA;
-    #if MIXED_REFS
+#if MIXED_REFS_YES
     h->param.analyse.b_mixed_references = h->param.analyse.b_mixed_references && h->param.i_frame_reference > 1;
-    #endif
+#endif
     h->param.analyse.inter &= X264_ANALYSE_PSUB16x16|X264_ANALYSE_PSUB8x8|X264_ANALYSE_BSUB16x16|
                               X264_ANALYSE_I4x4|X264_ANALYSE_I8x8;
     h->param.analyse.intra &= X264_ANALYSE_I4x4|X264_ANALYSE_I8x8;
@@ -1411,7 +1411,7 @@ static int validate_parameters( x264_t *h, int b_open )
     BOOLIFY( analyse.b_transform_8x8 );
     BOOLIFY( analyse.b_weighted_bipred );
     BOOLIFY( analyse.b_chroma_me );
-#if MIXED_REFS
+#if MIXED_REFS_YES || MIXED_REFS_NO
     BOOLIFY( analyse.b_mixed_references );
 #endif
     BOOLIFY( analyse.b_fast_pskip );
@@ -1922,7 +1922,7 @@ static int encoder_try_reconfig( x264_t *h, x264_param_t *param, int *rc_reconfi
     COPY( analyse.b_chroma_me );
     COPY( analyse.b_dct_decimate );
     COPY( analyse.b_fast_pskip );
-#if MIXED_REFS
+#if MIXED_REFS_YES || MIXED_REFS_NO
     COPY( analyse.b_mixed_references );
 #endif
 #if PSY_RD

@@ -1128,10 +1128,12 @@ static struct option long_options[] =
     { "no-psy",            no_argument, NULL, 0 },
     { "psy",               no_argument, NULL, 0 },
 #endif
-#if MIXED_REFS
+#if MIXED_REFS_YES
     { "mixed-refs",        no_argument, NULL, 0 },
 #endif
+#if MIXED_REFS_NO
     { "no-mixed-refs",     no_argument, NULL, 0 },
+#endif
     { "no-chroma-me",      no_argument, NULL, 0 },
     { "8x8dct",            no_argument, NULL, '8' },
     { "no-8x8dct",         no_argument, NULL, 0 },

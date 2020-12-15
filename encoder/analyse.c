@@ -1347,7 +1347,7 @@ static void mb_analyse_inter_p16x16( x264_t *h, x264_mb_analysis_t *a )
         }
     }
 }
-#if MIXED_REFS
+#if MIXED_REFS_YES
 static void mb_analyse_inter_p8x8_mixed_ref( x264_t *h, x264_mb_analysis_t *a )
 {
     x264_me_t m;
@@ -1446,6 +1446,7 @@ static void mb_analyse_inter_p8x8_mixed_ref( x264_t *h, x264_mb_analysis_t *a )
 }
 #endif
 
+#if MIXED_REFS_NO
 static void mb_analyse_inter_p8x8( x264_t *h, x264_mb_analysis_t *a )
 {
     /* Duplicate refs are rarely useful in p8x8 due to the high cost of the
@@ -1507,6 +1508,7 @@ static void mb_analyse_inter_p8x8( x264_t *h, x264_mb_analysis_t *a )
 #endif
     M32( h->mb.i_sub_partition ) = D_L0_8x8 * 0x01010101;
 }
+#endif
 
 static void mb_analyse_inter_p16x8( x264_t *h, x264_mb_analysis_t *a, int i_best_satd )
 {
@@ -2199,7 +2201,7 @@ static inline void mb_cache_mv_b8x16( x264_t *h, x264_mb_analysis_t *a, int i, i
 }
 #undef CACHE_MV_BI
 
-#if MIXED_REFS
+#if MIXED_REFS_YES
 static void mb_analyse_inter_b8x8_mixed_ref( x264_t *h, x264_mb_analysis_t *a )
 {
     ALIGNED_ARRAY_16( pixel, pix,[2],[8*8] );
@@ -2313,6 +2315,7 @@ static void mb_analyse_inter_b8x8_mixed_ref( x264_t *h, x264_mb_analysis_t *a )
 }
 #endif
 
+#if MIXED_REFS_NO
 static void mb_analyse_inter_b8x8( x264_t *h, x264_mb_analysis_t *a )
 {
     pixel **p_fref[2] =
@@ -2389,6 +2392,7 @@ static void mb_analyse_inter_b8x8( x264_t *h, x264_mb_analysis_t *a )
     /* mb type cost */
     a->i_cost8x8bi += a->i_lambda * i_mb_b_cost_table[B_8x8];
 }
+#endif
 
 static void mb_analyse_inter_b16x8( x264_t *h, x264_mb_analysis_t *a, int i_best_satd )
 {
@@ -3101,12 +3105,16 @@ skip_analysis:
 
             if( flags & X264_ANALYSE_PSUB16x16 )
             {
-                #if MIXED_REFS
+#if MIXED_REFS_YES 
                 if( h->param.analyse.b_mixed_references )
                     mb_analyse_inter_p8x8_mixed_ref( h, &analysis );
+#endif              
+#if MIXED_REFS_YES && MIXED_REFS_NO
                 else
-                #endif
+#endif
+#if MIXED_REFS_NO
                     mb_analyse_inter_p8x8( h, &analysis );
+#endif
             }
 
             /* Select best inter mode */
@@ -3474,12 +3482,16 @@ skip_analysis:
 
             if( flags & X264_ANALYSE_BSUB16x16 )
             {
-                #if MIXED_REFS
+#if MIXED_REFS_YES
                 if( h->param.analyse.b_mixed_references )
                     mb_analyse_inter_b8x8_mixed_ref( h, &analysis );
+#endif
+#if MIXED_REFS_YES && MIXED_REFS_NO
                 else
-                #endif
+#endif
+#if MIXED_REFS_NO
                     mb_analyse_inter_b8x8( h, &analysis );
+#endif
 
                 COPY3_IF_LT( i_cost, analysis.i_cost8x8bi, i_type, B_8x8, i_partition, D_8x8 );
 

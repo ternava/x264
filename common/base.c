@@ -450,7 +450,7 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
 #endif
     param->analyse.i_me_range = 16;
     param->analyse.i_subpel_refine = 7;
-#if MIXED_REFS
+#if MIXED_REFS_YES
     param->analyse.b_mixed_references = 1;
 #endif
     param->analyse.b_chroma_me = 1;
@@ -522,7 +522,7 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->analyse.i_me_method = X264_ME_DIA;
         param->analyse.i_subpel_refine = 0;
         param->rc.i_aq_mode = 0;
-#if MIXED_REFS
+#if MIXED_REFS_NO
         param->analyse.b_mixed_references = 0;
 #endif
 #if TRELLIS
@@ -542,7 +542,7 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->analyse.i_me_method = X264_ME_DIA;
         param->analyse.i_subpel_refine = 1;
         param->i_frame_reference = 1;
-#if MIXED_REFS
+#if MIXED_REFS_NO
         param->analyse.b_mixed_references = 0;
 #endif
 #if TRELLIS
@@ -558,7 +558,7 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
     {
         param->analyse.i_subpel_refine = 2;
         param->i_frame_reference = 1;
-#if MIXED_REFS
+#if MIXED_REFS_NO
         param->analyse.b_mixed_references = 0;
 #endif
 #if TRELLIS
@@ -569,7 +569,7 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
     }
     else if( !strcasecmp( preset, "faster" ) )
     {
-#if MIXED_REFS
+#if MIXED_REFS_NO
         param->analyse.b_mixed_references = 0;
 #endif
         param->i_frame_reference = 2;
@@ -1331,7 +1331,7 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
 #endif
     OPT("chroma-me")
         p->analyse.b_chroma_me = atobool(value);
-#if MIXED_REFS
+#if MIXED_REFS_YES || MIXED_REFS_NO
     OPT("mixed-refs")
         p->analyse.b_mixed_references = atobool(value);
 #endif
@@ -1507,7 +1507,7 @@ char *x264_param2string( x264_param_t *p, int b_res )
     if( p->analyse.b_psy )
         s += sprintf( s, " psy_rd=%.2f:%.2f", p->analyse.f_psy_rd, p->analyse.f_psy_trellis );
 #endif
-#if MIXED_REFS
+#if MIXED_REFS_YES || MIXED_REFS_NO
     s += sprintf( s, " mixed_ref=%d", p->analyse.b_mixed_references );
 #endif
     s += sprintf( s, " me_range=%d", p->analyse.i_me_range );

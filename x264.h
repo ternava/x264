@@ -412,7 +412,9 @@ typedef struct x264_param_t
         int          i_mv_range_thread; /* minimum space between threads. -1 = auto, based on number of threads. */
         int          i_subpel_refine; /* subpixel motion estimation quality */
         int          b_chroma_me; /* chroma ME for subpel and mode decision in P-frames */
+#if MIXED_REFS_YES || MIXED_REFS_NO
         int          b_mixed_references; /* allow each mb partition to have its own reference number */
+#endif
         int          i_trellis;  /* trellis RD quantization */
         int          b_fast_pskip; /* early SKIP detection on P-frames */
         int          b_dct_decimate; /* transform coefficient thresholding on P-frames */
