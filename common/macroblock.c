@@ -1937,6 +1937,7 @@ void x264_macroblock_bipred_init( x264_t *h )
                     h->mb.dist_scale_factor_buf[mbfield][field][i_ref0][i_ref1] = dist_scale_factor;
 
                     dist_scale_factor >>= 2;
+#if WEIGHTB_YES        
                     if( h->param.analyse.b_weighted_bipred
                           && dist_scale_factor >= -64
                           && dist_scale_factor <= 128 )
@@ -1946,8 +1947,13 @@ void x264_macroblock_bipred_init( x264_t *h )
                         // if we ever generate them, we'll have to drop that optimization.
                         assert( dist_scale_factor >= -63 && dist_scale_factor <= 127 );
                     }
+#endif
+#if WEIGHTB_YES && WEIGHTB_NO
                     else
+#endif
+#if WEIGHTB_NO
                         h->mb.bipred_weight_buf[mbfield][field][i_ref0][i_ref1] = 32;
+#endif
                 }
             }
 }

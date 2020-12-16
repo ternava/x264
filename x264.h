@@ -402,7 +402,9 @@ typedef struct x264_param_t
 
         int          b_transform_8x8;
         int          i_weighted_pred; /* weighting for P-frames */
+#if WEIGHTB_YES || WEIGHTB_NO
         int          b_weighted_bipred; /* implicit weighting for B-frames */
+#endif
         int          i_direct_mv_pred; /* spatial vs temporal mv prediction */
         int          i_chroma_qp_offset;
 

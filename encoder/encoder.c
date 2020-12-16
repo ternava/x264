@@ -288,6 +288,7 @@ static void slice_header_write( bs_t *s, x264_slice_header_t *sh, int i_nal_ref_
         }
     }
 
+//#if WEIGHTB_NO
     sh->b_weighted_pred = 0;
     if( sh->pps->b_weighted_pred && sh->i_type == SLICE_TYPE_P )
     {
@@ -320,10 +321,16 @@ static void slice_header_write( bs_t *s, x264_slice_header_t *sh, int i_nal_ref_
             }
         }
     }
-    else if( sh->pps->b_weighted_bipred == 1 && sh->i_type == SLICE_TYPE_B )
+//#endif
+#if WEIGHTB_YES && WEIGHTB_NO
+    else 
+#endif
+#if WEIGHTB_YES
+    if( sh->pps->b_weighted_bipred == 1 && sh->i_type == SLICE_TYPE_B )
     {
       /* TODO */
     }
+#endif
 
     if( i_nal_ref_idc != 0 )
     {
@@ -1051,7 +1058,9 @@ static int validate_parameters( x264_t *h, int b_open )
     {
         h->param.i_bframe_adaptive = X264_B_ADAPT_NONE;
         h->param.analyse.i_direct_mv_pred = 0;
+#if WEIGHTB_NO
         h->param.analyse.b_weighted_bipred = 0;
+#endif
         h->param.b_open_gop = 0;
     }
     if( h->param.b_intra_refresh && h->param.i_bframe_pyramid == X264_B_PYRAMID_NORMAL )

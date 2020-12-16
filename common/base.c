@@ -458,7 +458,9 @@ REALIGN_STACK void x264_param_default( x264_param_t *param )
     param->analyse.i_mv_range = -1; // set from level_idc
     param->analyse.i_chroma_qp_offset = 0;
     param->analyse.b_fast_pskip = 1;
+#if WEIGHTB_YES
     param->analyse.b_weighted_bipred = 1;
+#endif
     param->analyse.i_weighted_pred = X264_WEIGHTP_SMART;
     param->analyse.b_dct_decimate = 1;
     param->analyse.b_transform_8x8 = 1;
@@ -533,7 +535,9 @@ static int param_apply_preset( x264_param_t *param, const char *preset )
         param->rc.b_mb_tree = 0;
 #endif
         param->analyse.i_weighted_pred = X264_WEIGHTP_NONE;
+#if WEIGHTB_NO
         param->analyse.b_weighted_bipred = 0;
+#endif
         param->rc.i_lookahead = 0;
     }
     else if( !strcasecmp( preset, "superfast" ) )
@@ -725,7 +729,9 @@ static int param_apply_tune( x264_param_t *param, const char *tune )
 #if CABAC_NO
             param->b_cabac = 0;
 #endif
+#if WEIGHTB_NO
             param->analyse.b_weighted_bipred = 0;
+#endif
             param->analyse.i_weighted_pred = X264_WEIGHTP_NONE;
         }
         else if( len == 11 && !strncasecmp( tune, "zerolatency", 11 ) )
@@ -1289,8 +1295,10 @@ REALIGN_STACK int x264_param_parse( x264_param_t *p, const char *name, const cha
     }
     OPT("8x8dct")
         p->analyse.b_transform_8x8 = atobool(value);
+#if WEIGHTB_YES || WEIGHTB_NO
     OPT2("weightb", "weight-b")
         p->analyse.b_weighted_bipred = atobool(value);
+#endif
     OPT("weightp")
         p->analyse.i_weighted_pred = atoi(value);
     OPT2("direct", "direct-pred")
@@ -1551,9 +1559,11 @@ char *x264_param2string( x264_param_t *p, int b_res )
     s += sprintf( s, " bframes=%d", p->i_bframe );
     if( p->i_bframe )
     {
+#if WEIGHTB_YES || WEIGHTB_NO
         s += sprintf( s, " b_pyramid=%d b_adapt=%d b_bias=%d direct=%d weightb=%d open_gop=%d",
                       p->i_bframe_pyramid, p->i_bframe_adaptive, p->i_bframe_bias,
                       p->analyse.i_direct_mv_pred, p->analyse.b_weighted_bipred, p->b_open_gop );
+#endif
     }
     s += sprintf( s, " weightp=%d", p->analyse.i_weighted_pred > 0 ? p->analyse.i_weighted_pred : 0 );
 

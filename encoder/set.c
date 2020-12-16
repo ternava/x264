@@ -509,8 +509,9 @@ void x264_pps_init( x264_pps_t *pps, int i_id, x264_param_t *param, x264_sps_t *
     pps->i_num_ref_idx_l1_default_active = 1;
 
     pps->b_weighted_pred = param->analyse.i_weighted_pred > 0;
+#if WEIGHTB_YES || WEIGHTB_NO
     pps->b_weighted_bipred = param->analyse.b_weighted_bipred ? 2 : 0;
-
+#endif
     pps->i_pic_init_qp = param->rc.i_rc_method == X264_RC_ABR || param->b_stitchable ? 26 + QP_BD_OFFSET : SPEC_QP( param->rc.i_qp_constant );
     pps->i_pic_init_qs = 26 + QP_BD_OFFSET;
 
@@ -537,7 +538,9 @@ void x264_pps_write( bs_t *s, x264_sps_t *sps, x264_pps_t *pps )
     bs_write_ue( s, pps->i_num_ref_idx_l0_default_active - 1 );
     bs_write_ue( s, pps->i_num_ref_idx_l1_default_active - 1 );
     bs_write1( s, pps->b_weighted_pred );
+#if WEIGHTB_YES || WEIGHTB_NO
     bs_write( s, 2, pps->b_weighted_bipred );
+#endif
 
     bs_write_se( s, pps->i_pic_init_qp - 26 - QP_BD_OFFSET );
     bs_write_se( s, pps->i_pic_init_qs - 26 - QP_BD_OFFSET );

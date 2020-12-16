@@ -1113,8 +1113,12 @@ static struct option long_options[] =
     { "analyse",     required_argument, NULL, 0 },
     { "partitions",  required_argument, NULL, 'A' },
     { "direct",      required_argument, NULL, 0 },
+#if WEIGHTB_YES
     { "weightb",           no_argument, NULL, 'w' },
+#endif
+#if WEIGHTB_NO
     { "no-weightb",        no_argument, NULL, 0 },
+#endif
     { "weightp",     required_argument, NULL, 0 },
     { "me",          required_argument, NULL, 0 },
     { "merange",     required_argument, NULL, 0 },
