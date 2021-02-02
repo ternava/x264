@@ -22,6 +22,12 @@
 #ifndef PSY_NO
 #define PSY_NO 1
 #endif
+#ifndef WEIGHTB_YES
+#define WEIGHTB_YES 1
+#endif
+#ifndef WEIGHTB_NO
+#define WEIGHTB_NO 1
+#endif
 #ifndef TRELLIS
 #define TRELLIS 1
 #endif
@@ -33,12 +39,6 @@
 #endif
 #ifndef CQM
 #define CQM 1 /* An unknown error is shown when it's 0 */
-#endif
-#ifndef WEIGHTB_YES
-#define WEIGHTB_YES 1
-#endif
-#ifndef WEIGHTB_NO
-#define WEIGHTB_NO 1
 #endif
 
 #ifndef UNKNOWN
