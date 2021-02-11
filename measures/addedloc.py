@@ -1,10 +1,9 @@
 import os, re
-from collections import Counter;
+from collections import Counter
 
 def count_added_loc(added_directive):
-    count = Counter();
-    k = 0
-    for subdir, dirs, files in os.walk(r'../x264/'):
+    count = Counter()
+    for subdir, dirs, files in os.walk(r'../x264'):
             for filename in files:
                 filepath = subdir + os.sep + filename
                 if filepath.endswith(".c") or filepath.endswith(".h"):
@@ -32,7 +31,7 @@ as a result of the added preprocessor directives
 to change the binding time of load-time configuration options
 to compile time """
 
-filePath = "measures/addedloc.txt";
+filePath = "measures/addedloc.txt"
    
 if os.path.exists(filePath):
     os.remove(filePath)
