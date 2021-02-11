@@ -1,26 +1,44 @@
 import subprocess
 import sys
 import glob, os
-from datetime import datetime
+import time
 from pathlib import Path
 
 """!/_\ This path needs to be updated to your specific path. """
-sys.path.append("/home/ternava/Documents/GitHub/x264")
+sys.path.append("/home/xternava/Documents/GitHub/x264")
 
-from measures.compilex264 import compilex264
+#from measures.compilex264 import compilex264
+
+def compilex264():
+    subprocess.run(["./configure"])
+    subprocess.run(["make"])
 
 dir_name = "measures/out"
 size_data = []
+e_time = []
 
 def runx264(x264_exe, input_video, cli_options):
     name = Path(input_video).stem
+
     for cli_opt in cli_options:
+
+        start = time.perf_counter()
+
         run_x264 = subprocess.run([x264_exe, 
             cli_opt, 
             "-o", 
             dir_name + "/"+str(cli_opt)+"%s.mkv"% name, 
-            input_video])
+            input_video, 
+            "--input-res=640x360"])
+        
+        end = time.perf_counter()
+        encoded_time = f"Encoded time is {end - start:0.4f} seconds"
+        e_time.append(encoded_time)
+        print(encoded_time)
+
         run_x264.check_returncode()
+
+
 
 def extract_video_metadata(exif_exe, output_video):
     """ From the metadata of output videos are extracted 
@@ -53,7 +71,7 @@ lst_presets = ["--preset=%s" % p for p in ("ultrafast",
                                   "slower",
                                   "veryslow",
                                   "placebo") ]
-cli_options = ["--cabac", "--no-cabac"] + lst_presets
+cli_options = [] + lst_presets
 
 if os.path.exists(dir_name) and os.path.isdir(dir_name):
     """ First, if existent, the output videos are removed from the folder """
@@ -69,7 +87,18 @@ else:
 
 """ The exiftool for reading the metadata of videos """
 exif_exe = "exiftool"
-for output_video in glob.glob("measures/out/*.mkv"):
-    extract_video_metadata(exif_exe, output_video)
 
-print("\n".join(size_data))
+
+filePath = "measures/videosize.txt"
+   
+if os.path.exists(filePath):
+    os.remove(filePath)
+    for output_video in glob.glob("measures/out/*.mkv"):
+        extract_video_metadata(exif_exe, output_video)
+    print("\n".join(size_data) + "\n" + "\n".join(e_time), file=open(filePath, "a"))
+    print("\n".join(size_data))
+else:
+    for output_video in glob.glob("measures/out/*.mkv"):
+        extract_video_metadata(exif_exe, output_video)
+    print("\n".join(size_data) + "\n" + "\n".join(e_time), file=open(filePath, "a"))
+    print("\n".join(size_data))
