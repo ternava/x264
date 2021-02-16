@@ -22,7 +22,8 @@ def runx264(x264_exe, input_video, cli_options):
 
     for cli_opt in cli_options:
 
-        start = time.perf_counter()
+        #start = time.perf_counter()
+        start = time.time()
 
         run_x264 = subprocess.run([x264_exe, 
             cli_opt, 
@@ -31,8 +32,9 @@ def runx264(x264_exe, input_video, cli_options):
             input_video, 
             "--input-res=640x360"])
         
-        end = time.perf_counter()
-        encoded_time = f"Encoded time is {end - start:0.4f} seconds"
+        #end = time.perf_counter()
+        end = time.time()
+        encoded_time = "Encoded time for " + str(cli_opt) + "%s.mkv"% name + f" is {end - start:0.4f} seconds"
         e_time.append(encoded_time)
         print(encoded_time)
 
@@ -58,7 +60,17 @@ def extract_video_metadata(exif_exe, output_video):
     size_data.append(show_metadata)
     video_metadata.check_returncode()
 
-#compilex264()
+""" 
+    lst_opt = ["MIXED_REFS_YES", "MIXED_REFS_NO", 
+                "CABAC_YES", "CABAC_NO", 
+                "MBTREE_YES", "MBTREE_NO", 
+                "PSY_YES", "PSY_NO",
+                "WEIGHTB_YES", "WEIGHTB_NO"]
+    
+    for opt in lst_opt:
+        change_values(opt, " 0", " 1") """
+
+compilex264()
 
 rmv_exe = "./x264"
 lst_presets = ["--preset=%s" % p for p in ("ultrafast",
