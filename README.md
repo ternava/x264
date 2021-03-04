@@ -1,6 +1,4 @@
-### 
-
-### specializing x264
+### Specializing x264
 
 Currently, the system of x264 can be specialized regarding 10 configuration options, namely: 
 ```
@@ -31,21 +29,21 @@ To specialize x264, there are three steps:
 3. Compile the system x264 using `./configure && make`. As a result, the specialized system of x264 will be without the configuration option of `--cabac`. For example, using it to encode a video like here `./x264 --cabac -o <output_video> <input_video>` will show this warning: `./x264: unrecognized option '--cabac'`.
 
 
-### measurements
+### Measurements
 
 There are 4 Python scripts that can help to measure 5 things in the original or specialized system of x264. 
 
-##### Counting the number of added lines of code (LoC): 
+- ##### Counting the number of added lines of code (LoC): 
 The script `measures/addedloc.py` is used to count the number of LoC that we added tp delimit each of the 10 configuration options. To use it, in the original system of x264, you simply need to run the script using `python3 measures/addedloc.py` and it will generate a file named `addedloc.txt` with information about the added LoC.
 
-##### Measuring the binary size
+- ##### Measuring the binary size
 The script `measures/exe_size.py` is used to measure the binary size of the original and specialized systems of x264 by any of the 10 configuration options. 
 To use it, you simply need to run the script using `python3 measures/exe_size.py` and it will generate a file named `èxesize.txt` with information about the binary size in bytes of each executable and their differences in percentage from the original system.
 
-##### Measuring the number of gadgets
+- ##### Measuring the number of gadgets
 The script `measures/exe_gadgets.py` is used to count the number of gadgets in the original and ten specialized systems of x264. To use it, you simply need to run the sricpt using `python3 measures/exe_gadgets.py` and it will generate a file named `gadgetsnr.txt` with information about the number of found gadgets in the original and specialized systems, including their difference to the original system in percentage. 
 
-##### Checking for soundness and measuring the encoding time
+- ##### Checking for soundness and measuring the encoding time
 The script `measures/appx264-cabac.py` is used for two reasons, in the original and ten specialized systems:
   - to measure the video size in bytes after its encoding, which measure we use to check the soundness of a system
   - to measure the encoding time of a video, measures in seconds.
