@@ -3,11 +3,17 @@
 ### specializing x264
 
 Currently, the system of x264 can be specialized regarding 10 configuration options, namely: 
-`--mixed-refs`, `--no-mixed-refs`, `--cabac`, `--no-cabac`, `--mbtree`, `--no-mbtree`, `--psy`, `--no-psy`, `--weightb`, `--no-weightb`.
+```
+--mixed-refs, --no-mixed-refs
+--cabac, --no-cabac
+--mbtree, --no-mbtree
+--psy, --no-psy
+--weightb, --no-weightb
+```
 
-The system can be specialized regarding:
-- a single configuration option, e.g., `--cabac`, or 
-- a set of them, e.g., `--cabac`, `--psy`, and `-no-weightb`. 
+There are two possible specialization scenarions:
+- using a single configuration option, e.g., `--cabac`, or 
+- using a set of configuration options, e.g., `--cabac`, `--psy`, and `-no-weightb`. 
 
 Should be noted that it cannot be specialized by mutually exclusive options, e.g., using `--cabac` and `--no-cabac` at the same time. 
 
@@ -23,6 +29,22 @@ To specialize x264, there are three steps:
 #endif
 ```
 3. Compile the system x264 using `./configure && make`. As a result, the specialized system of x264 will be without the configuration option of `--cabac`. For example, using it to encode a video like here `./x264 --cabac -o <output_video> <input_video>` will show this warning: `./x264: unrecognized option '--cabac'`.
+
+
+### measurements
+
+There are 4 Python scripts that can help to measure 5 things in the original or specialized system of x264. 
+
+##### Counting the number of added lines of code (LoC): 
+- The script `measures/addedloc.py` is used to count the number of LoC that we added tp delimit each of the 10 configuration options. To use it, in the original system of x264, you simply need to run this script using `python3 measures/addedloc.py` and it will generate a file named `addedloc.txt` with information about the added LoC.
+
+##### Measuring the binary size
+- The script `measures/exe_size.py` is used to measure the binary size of the original and specialized systems of x264 by any of the 10 configuration options. 
+To use it, you simply need to run this script using `python3 measures/exe_size.py` and it will generate a file named `èxesize.txt` with information about the binary size in bytes of each executable and their differences in percentage from the original system.
+
+##### Measuring the number of gadgets
+
+
 
 
 
