@@ -1,3 +1,38 @@
+### About the used x264
+
+In our study we used the x264 (https://github.com/mirror/x264) at it commit id `db0d417`.
+
+From its compile time configuration options, we enabled (or kept disabled) the following options:
+```
+platform:       X86_64
+byte order:     little-endian
+system:         LINUX
+cli:            yes
+libx264:        internal
+shared:         no
+static:         no
+bashcompletion: yes
+asm:            yes
+interlaced:     yes
+avs:            avxsynth
+lavf:           yes
+ffms:           yes
+mp4:            no
+gpl:            yes
+thread:         posix
+opencl:         yes
+filters:        resize crop select_every
+lto:            no
+debug:          no
+gprof:          no
+strip:          no
+PIC:            no
+bit depth:      all
+chroma format:  all
+```
+
+
+
 ### Specializing x264
 
 Currently, the system of x264 can be specialized regarding 10 configuration options, namely: 
