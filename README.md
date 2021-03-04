@@ -86,7 +86,7 @@ The script `measures/appx264-cabac.py` is used for two reasons, in the original 
 To use it, you simply need to run the script using `python3 measures/appx264-cabac.py` and it will generate a file named `videosize.txt` with information about the encoded video size and its used encoded time for ten presets in x264 (see http://www.chaneru.com/Roku/HLS/X264_Settings.htm#preset).
 
 
-
+For these last two measurements is required at least a video. In our study we used eight random videos downloaded for free from the UGC YouTube dataset: https://media.withyoutube.com/. 
 
 
 
