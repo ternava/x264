@@ -3,7 +3,7 @@ import sys, os
 
 from options import all_options
 
-stats_file = "measures/exesize.txt"
+stats_file = "measures/exesize_2-200.csv"
 exe_path = "./x264"
 
 def calculate_stats(exe_path):
@@ -21,11 +21,13 @@ def print_stats(opt):
         file=open(stats_file, "a"))
 
 def compilex264(compile_time_opt):
-    subprocess.run(["./configure", compile_time_opt])
+    subprocess.run(["make", "clean"])
+    subprocess.run(["./configure"] + compile_time_opt)
     subprocess.run(["make"])
 
 def do_operations():
     for opt in all_options:
+        print(opt)
         compilex264(opt)
         print_stats(opt)
 
