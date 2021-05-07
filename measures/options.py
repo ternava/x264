@@ -64,7 +64,7 @@ single_configurations_08 = extractDigits(configuration_options_5)
 sample_configurations = []
 
 # for variant in glob.glob("measures/products/*.config"):
-for variant in glob.glob("measures/products_2-200/*.config"):
+for variant in glob.glob("measures/products_27/*.config"):
     lineList = list()
     with open(variant) as f:
         for line in f:
@@ -77,3 +77,11 @@ print(sample_configurations)
 # which will be used to measure the changes on
 # the binary size and number of gadgets in x264
 all_options =  [*sample_configurations]
+all_s_options = [*single_configurations_01,
+                *single_configurations_02,
+                *single_configurations_03,
+                *single_configurations_04,
+                *single_configurations_05,
+                *single_configurations_06,
+                *single_configurations_07,
+                *single_configurations_08] 

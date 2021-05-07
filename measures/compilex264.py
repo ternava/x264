@@ -1,10 +1,12 @@
 import subprocess
 import sys, os
 
-from options import all_options
+from options import all_options, all_s_options
 
 stats_file = "measures/exesize_2-200.csv"
 exe_path = "./x264"
+
+i_options = all_s_options
 
 def calculate_stats(exe_path):
     exe_stats = os.stat(exe_path)
@@ -20,16 +22,25 @@ def print_stats(opt):
         str(calculate_stats(exe_path)) + " bytes, ", 
         file=open(stats_file, "a"))
 
-def compilex264(compile_time_opt):
+def ccompilex264(compile_time_opt):
     subprocess.run(["make", "clean"])
+    subprocess.run(["./configure"] + compile_time_opt)
+    subprocess.run(["make"])
+    
+def compilex264(compile_time_opt):
     subprocess.run(["./configure"] + compile_time_opt)
     subprocess.run(["make"])
 
 def do_operations():
-    for opt in all_options:
-        print(opt)
-        compilex264(opt)
-        print_stats(opt)
+    for o in all_s_options:
+        ccompilex264(o)
+        print_stats(o)
+        for opt in all_options:
+            compilex264(opt)
+            print_stats(opt)
+        compilex264(o)
+        print_stats(o)
+
 
 if os.path.exists(stats_file):
     os.remove(stats_file)
