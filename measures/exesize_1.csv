@@ -1,0 +1,62 @@
+Exe size when ['--disable-avs'] is: 3091856 bytes, Encoded time for ['--disable-avs']is 37.3443 seconds
+Exe size when ['--disable-avs'] is: 3091856 bytes, Encoded time for ['--disable-avs'] is 48.8134 seconds
+Exe size when ['--disable-swscale'] is: 3072080 bytes, Encoded time for ['--disable-swscale']is 56.5762 seconds
+Exe size when ['--disable-swscale'] is: 3072080 bytes, Encoded time for ['--disable-swscale'] is 51.2860 seconds
+Exe size when ['--disable-lavf'] is: 3090504 bytes, Encoded time for ['--disable-lavf']is 59.4151 seconds
+Exe size when ['--disable-lavf'] is: 3090504 bytes, Encoded time for ['--disable-lavf'] is 51.7462 seconds
+Exe size when ['--disable-ffms'] is: 3091016 bytes, Encoded time for ['--disable-ffms']is 58.3848 seconds
+Exe size when ['--disable-ffms'] is: 3091016 bytes, Encoded time for ['--disable-ffms'] is 52.9564 seconds
+Exe size when ['--disable-gpac'] is: 3096160 bytes, Encoded time for ['--disable-gpac']is 53.3828 seconds
+Exe size when ['--disable-gpac'] is: 3096160 bytes, Encoded time for ['--disable-gpac'] is 53.1242 seconds
+Exe size when ['--disable-lsmash'] is: 2543360 bytes, Encoded time for ['--disable-lsmash']is 58.4099 seconds
+Exe size when ['--disable-lsmash'] is: 2543360 bytes, Encoded time for ['--disable-lsmash'] is 54.1119 seconds
+Exe size when ['--enable-lto'] is: 3137264 bytes, Encoded time for ['--enable-lto']is 107.2287 seconds
+Exe size when ['--enable-lto'] is: 3137264 bytes, Encoded time for ['--enable-lto'] is 102.0507 seconds
+Exe size when ['--enable-debug'] is: 10654664 bytes, Encoded time for ['--enable-debug']is 61.8354 seconds
+Exe size when ['--enable-debug'] is: 10654664 bytes, Encoded time for ['--enable-debug'] is 54.0136 seconds
+Exe size when ['--enable-gprof'] is: 3123888 bytes, Encoded time for ['--enable-gprof']is 62.7300 seconds
+Exe size when ['--enable-gprof'] is: 3123888 bytes, Encoded time for ['--enable-gprof'] is 53.7525 seconds
+Exe size when ['--enable-strip'] is: 2860376 bytes, Encoded time for ['--enable-strip']is 53.6032 seconds
+Exe size when ['--enable-strip'] is: 2860376 bytes, Encoded time for ['--enable-strip'] is 54.9865 seconds
+Exe size when ['--enable-pic'] is: 3120784 bytes, Encoded time for ['--enable-pic']is 64.4869 seconds
+Exe size when ['--enable-pic'] is: 3120784 bytes, Encoded time for ['--enable-pic'] is 50.4104 seconds
+Exe size when ['--disable-asm'] is: 2507720 bytes, Encoded time for ['--disable-asm']is 14.3081 seconds
+Exe size when ['--disable-asm'] is: 2507720 bytes, Encoded time for ['--disable-asm'] is 6.9193 seconds
+Exe size when ['--enable-shared'] is: 3124728 bytes, Encoded time for ['--enable-shared']is 58.3508 seconds
+Exe size when ['--enable-shared'] is: 3124728 bytes, Encoded time for ['--enable-shared'] is 54.1587 seconds
+Exe size when ['--enable-static'] is: 3096160 bytes, Encoded time for ['--enable-static']is 54.1152 seconds
+Exe size when ['--enable-static'] is: 3096160 bytes, Encoded time for ['--enable-static'] is 57.5947 seconds
+Exe size when ['--enable-bashcompletion'] is: 3096160 bytes, Encoded time for ['--enable-bashcompletion']is 61.0328 seconds
+Exe size when ['--enable-bashcompletion'] is: 3096160 bytes, Encoded time for ['--enable-bashcompletion'] is 63.5472 seconds
+Exe size when ['--disable-cli'] is: 3096160 bytes, Encoded time for ['--disable-cli']is 64.1408 seconds
+Exe size when ['--disable-cli'] is: 5024384 bytes, Encoded time for ['--disable-cli'] is 4.3351 seconds
+Exe size when ['--disable-bashcompletion'] is: 3096160 bytes, Encoded time for ['--disable-bashcompletion']is 55.0922 seconds
+Exe size when ['--disable-bashcompletion'] is: 3096160 bytes, Encoded time for ['--disable-bashcompletion'] is 54.5224 seconds
+Exe size when ['--disable-opencl'] is: 2992640 bytes, Encoded time for ['--disable-opencl']is 61.5026 seconds
+Exe size when ['--disable-opencl'] is: 2992640 bytes, Encoded time for ['--disable-opencl'] is 54.8670 seconds
+Exe size when ['--disable-gpl'] is: 3096160 bytes, Encoded time for ['--disable-gpl']is 65.0070 seconds
+Exe size when ['--disable-gpl'] is: 3096160 bytes, Encoded time for ['--disable-gpl'] is 55.3574 seconds
+Exe size when ['--disable-thread'] is: 3081568 bytes, Encoded time for ['--disable-thread']is 63.1983 seconds
+Exe size when ['--disable-thread'] is: 3081568 bytes, Encoded time for ['--disable-thread'] is 36.8709 seconds
+Exe size when ['--disable-win32thread'] is: 3096160 bytes, Encoded time for ['--disable-win32thread']is 37.4256 seconds
+Exe size when ['--disable-win32thread'] is: 3096160 bytes, Encoded time for ['--disable-win32thread'] is 37.4726 seconds
+Exe size when ['--disable-interlaced'] is: 3034664 bytes, Encoded time for ['--disable-interlaced']is 42.0568 seconds
+Exe size when ['--disable-interlaced'] is: 3034664 bytes, Encoded time for ['--disable-interlaced'] is 36.4365 seconds
+Exe size when ['--system-libx264'] is: 3096160 bytes, Encoded time for ['--system-libx264']is 41.5064 seconds
+Exe size when ['--system-libx264'] is: 5024384 bytes, Encoded time for ['--system-libx264'] is 3.6861 seconds
+Exe size when ['--bit-depth=8'] is: 2033392 bytes, Encoded time for ['--bit-depth=8']is 24.6635 seconds
+Exe size when ['--bit-depth=8'] is: 2033392 bytes, Encoded time for ['--bit-depth=8'] is 21.3566 seconds
+Exe size when ['--bit-depth=10'] is: 1858176 bytes, Encoded time for ['--bit-depth=10']is 21.6192 seconds
+Exe size when ['--bit-depth=10'] is: 1858176 bytes, Encoded time for ['--bit-depth=10'] is 19.7913 seconds
+Exe size when ['--bit-depth=all'] is: 3096160 bytes, Encoded time for ['--bit-depth=all']is 36.6718 seconds
+Exe size when ['--bit-depth=all'] is: 3096160 bytes, Encoded time for ['--bit-depth=all'] is 36.3448 seconds
+Exe size when ['--chroma-format=400'] is: 2823704 bytes, Encoded time for ['--chroma-format=400']is 40.8106 seconds
+Exe size when ['--chroma-format=400'] is: 2823704 bytes, Encoded time for ['--chroma-format=400'] is 37.0683 seconds
+Exe size when ['--chroma-format=420'] is: 2881728 bytes, Encoded time for ['--chroma-format=420']is 43.1734 seconds
+Exe size when ['--chroma-format=420'] is: 2881728 bytes, Encoded time for ['--chroma-format=420'] is 36.5822 seconds
+Exe size when ['--chroma-format=422'] is: 2886200 bytes, Encoded time for ['--chroma-format=422']is 40.9826 seconds
+Exe size when ['--chroma-format=422'] is: 2886200 bytes, Encoded time for ['--chroma-format=422'] is 38.3491 seconds
+Exe size when ['--chroma-format=444'] is: 2893736 bytes, Encoded time for ['--chroma-format=444']is 41.7851 seconds
+Exe size when ['--chroma-format=444'] is: 2893736 bytes, Encoded time for ['--chroma-format=444'] is 37.2647 seconds
+Exe size when ['--chroma-format=all'] is: 3096160 bytes, Encoded time for ['--chroma-format=all']is 40.6542 seconds
+Exe size when ['--chroma-format=all'] is: 3096160 bytes, Encoded time for ['--chroma-format=all'] is 39.8247 seconds
