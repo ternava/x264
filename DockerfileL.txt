@@ -1,0 +1,54 @@
+# base image as Ubuntu
+FROM ubuntu:18.04
+LABEL maintainer="t.xheva@gmail.com"
+ENV DEBIAN_FRONTEND=noninteractive 
+RUN apt-get -y update
+RUN apt-get -y install  nasm \
+                        libtool \
+                        autoconf \
+                        automake \
+                        cmake \
+                        git-core \
+                        texinfo \
+                        wget \
+                        yasm \
+                       # ffmpeg \
+                        pkg-config \
+                        zlib1g-dev \
+                        zlib1g 
+                        #libavformat-dev \
+                        #libswscale-dev \
+                        #libavcodec-dev
+
+
+# Install the lsmash library for mp4 support
+WORKDIR /usr/lib
+RUN git clone https://github.com/l-smash/l-smash
+RUN cd l-smash
+WORKDIR /usr/lib/l-smash
+RUN ./configure
+RUN make install
+
+WORKDIR /usr/lib
+RUN git clone -b n4.3 https://github.com/FFmpeg/FFmpeg.git ffmpeg
+#https://git.ffmpeg.org/ffmpeg.git ffmpeg
+RUN cd ffmpeg
+WORKDIR /usr/lib/ffmpeg
+RUN ./configure 
+RUN make install
+
+WORKDIR /usr/lib/
+RUN git clone -b 2.23 https://github.com/FFMS/ffms2.git
+RUN cd ffms2
+WORKDIR /usr/lib/ffms2
+RUN ./configure 
+RUN make install
+
+
+# Add local files to the image then compile the x264
+WORKDIR /usr/apps/x264
+ADD . .
+#RUN ./configure
+#RUN make
+
+#CMD ["/usr/bin/x264"]

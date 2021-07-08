@@ -1,9 +1,67 @@
 import os
 import subprocess
+import csv
+import glob
+import fileinput
+
+exe_name = "./x264"
+
+stats_file = "measures/stats_size_gadgets.csv"
+header = ['Specialized_sys', 'Binary_size', 'All_gadgets', "ROP_gadgets", "JOP_gadgets", "SYS_gadgets"]
+
+f = open(stats_file, "w")
+writer = csv.writer(f)
+writer.writerow(header)
 
 def compilex264():
+    subprocess.run(["make", "clean"])
     subprocess.run(["./configure"])
     subprocess.run(["make"])
+
+def allgadgets():
+    p = subprocess.run(["ROPgadget", "--binary", exe_name], 
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT)
+    nr_of_gadgets = p.stdout.decode('ascii').split()[-1]
+    return nr_of_gadgets
+
+def ropgadgets():
+    p = subprocess.run(["ROPgadget", "--binary", exe_name, "--nojop", "--nosys"], 
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT)
+    nr_of_gadgets = p.stdout.decode('ascii').split()[-1]
+    return nr_of_gadgets
+
+def jopgadgets():
+    p = subprocess.run(["ROPgadget", "--binary", exe_name, "--norop", "--nosys"], 
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT)
+    nr_of_gadgets = p.stdout.decode('ascii').split()[-1]
+    return nr_of_gadgets
+
+def sysgadgets():
+    p = subprocess.run(["ROPgadget", "--binary", exe_name, "--nojop", "--norop"], 
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT)
+    nr_of_gadgets = p.stdout.decode('ascii').split()[-1]
+    return nr_of_gadgets
+
+
+sample_configurations = []
+sample_name = []
+
+for variant in glob.glob("measures/products_10/*.config"):
+    lineList = list()
+    sample_name.append(str(variant))
+    with open(variant) as f:
+        for line in f:
+            lineList = [line.rstrip('\n') for line in open(variant)]
+        sample_configurations.append(lineList)
+
+print(sample_configurations)
+print(sample_name)
+
+print("--------------------")
 
 def change_values(opt, o_value, r_value):
     #read input file with options to be remained or removed
@@ -18,10 +76,30 @@ def change_values(opt, o_value, r_value):
     fin = open("removeoption.h", "wt")
     #overrite the input file with the resulting data
     fin.write(data)
+    #print(data)
     #close the file
     fin.close()
 
-exe_name = "./x264"
+def change_spec_values(opt):
+    # Read in the file
+    with open("removeoption.h", 'r') as file:
+        filedata = file.read()
+    for o in opt:
+        # Replace the target string
+        filedata = filedata.replace(str(o) + str(" 1") , str(o) + (" 0"))
+    # Write the file out again
+    with open("removeoption.h", 'w') as file:
+        file.write(filedata)
+
+lst_opt = ["MIXED_REFS_YES", "MIXED_REFS_NO", 
+        "CABAC_YES", "CABAC_NO", 
+        "MBTREE_YES", "MBTREE_NO", 
+        "PSY_YES", "PSY_NO",
+        "WEIGHTB_YES", "WEIGHTB_NO"]
+
+def change_all_0to1():
+    for optb in lst_opt:
+        change_values(optb, " 0", " 1")
 
 def calculate_stats(exe_name):
     exe_stats = os.stat(exe_name)
@@ -29,51 +107,27 @@ def calculate_stats(exe_name):
     exe_size = exe_stats.st_size
     return exe_size
 
-def print_stats(opt, orgn_size): 
-    print(f'Exe size in Bytes is {calculate_stats(exe_name)}')
-    print(f'Exe size in MegaBytes is {calculate_stats(exe_name) / (1024 * 1024)}')
-    print("Exe size when " + 
-        str(opt) + " is removed: " + 
-        str(calculate_stats(exe_name)) + " bytes, " + 
-        calculate_percentage(orgn_size), 
-        file=open(stats_file, "a"))
+def print_csv(opt):
+    exe_size = calculate_stats(exe_name)
+    nr_all_gadgets = allgadgets()
+    nr_ROP_gadgets = ropgadgets()
+    nr_JOP_gadgets = jopgadgets()
+    nr_SYS_gadgets = sysgadgets()
+    binary_sg = [opt, exe_size, nr_all_gadgets, nr_ROP_gadgets, nr_JOP_gadgets, nr_SYS_gadgets]
+    writer.writerow(binary_sg)
 
-def calculate_percentage(orgn_size): 
-    if((orgn_size - calculate_stats(exe_name)) > 0):
-        return str("{:.4%}".format(1 - (calculate_stats(exe_name)/orgn_size))) + " less" 
-    elif((orgn_size - calculate_stats(exe_name)) < 0):
-        return str("{:.4%}".format(abs(1 - (calculate_stats(exe_name)/orgn_size)))) + " more"
-    else:
-        return str("{:.4%}".format(1 - (calculate_stats(exe_name)/orgn_size))) 
-
-def do_operations():
-    lst_opt = ["MIXED_REFS_YES", "MIXED_REFS_NO", 
-            "CABAC_YES", "CABAC_NO", 
-            "MBTREE_YES", "MBTREE_NO", 
-            "PSY_YES", "PSY_NO",
-            "WEIGHTB_YES", "WEIGHTB_NO"]
-    
-    for opt in lst_opt:
-        change_values(opt, " 0", " 1")
-        
+def do_operations(opto):
+    change_spec_values(opto)
     compilex264()
-    orgnl_exe_size = calculate_stats(exe_name)
-    print("The size of the original exe is: " + 
-        str(orgnl_exe_size) + " bytes", 
-        file=open(stats_file, "a"))
+    print_csv(opto)
 
-    for opt in lst_opt:
-        change_values(opt, " 1", " 0")
-        compilex264()
-        change_values(opt, " 0", " 1")
-        print_stats(opt, orgnl_exe_size)
+# This can be removed if the sample_configuration list contains the [] array
+change_all_0to1()
+compilex264()
+print_csv("BASELINE")
 
-stats_file = "measures/exesize.txt"
-
-if os.path.exists(stats_file):
-    os.remove(stats_file)
-    do_operations()
-else: 
-    do_operations()
-
-    
+for opt in sample_configurations:
+    change_all_0to1()
+    print(opt)
+    print("-----")
+    do_operations(opt)

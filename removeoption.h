@@ -2,16 +2,16 @@
 #define MIXED_REFS_YES 1
 #endif
 #ifndef MIXED_REFS_NO
-#define MIXED_REFS_NO 1
+#define MIXED_REFS_NO 0
 #endif
 #ifndef CABAC_NO
-#define CABAC_NO 1
+#define CABAC_NO 0
 #endif
 #ifndef CABAC_YES
 #define CABAC_YES 1
 #endif
 #ifndef MBTREE_NO
-#define MBTREE_NO 1
+#define MBTREE_NO 0
 #endif
 #ifndef MBTREE_YES
 #define MBTREE_YES 1
@@ -20,13 +20,13 @@
 #define PSY_YES 1
 #endif
 #ifndef PSY_NO
-#define PSY_NO 1
+#define PSY_NO 0
 #endif
 #ifndef WEIGHTB_YES
 #define WEIGHTB_YES 1
 #endif
 #ifndef WEIGHTB_NO
-#define WEIGHTB_NO 1
+#define WEIGHTB_NO 0
 #endif
 #ifndef TRELLIS
 #define TRELLIS 1

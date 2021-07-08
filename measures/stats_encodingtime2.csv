@@ -1,0 +1,181 @@
+Specialized_sys,Option,Preset,Video,Encoding_time,Encoding_bitrate
+baseline,BASELINE,ultrafast,measures/in/original_01.mkv,0.3172,1879.26
+baseline,BASELINE,superfast,measures/in/original_01.mkv,0.4522,1882.26
+baseline,BASELINE,veryfast,measures/in/original_01.mkv,0.7890,1185.49
+baseline,BASELINE,faster,measures/in/original_01.mkv,0.8625,1195.93
+baseline,BASELINE,fast,measures/in/original_01.mkv,1.3230,1178.70
+baseline,BASELINE,medium,measures/in/original_01.mkv,1.4308,1179.18
+baseline,BASELINE,slow,measures/in/original_01.mkv,2.4525,1195.73
+baseline,BASELINE,slower,measures/in/original_01.mkv,3.0716,577.72
+baseline,BASELINE,veryslow,measures/in/original_01.mkv,7.3358,796.79
+baseline,BASELINE,placebo,measures/in/original_01.mkv,21.0673,356.13
+baseline,BASELINE,ultrafast,measures/in/original_04.mkv,0.3310,1113.00
+baseline,BASELINE,superfast,measures/in/original_04.mkv,0.3921,577.76
+baseline,BASELINE,veryfast,measures/in/original_04.mkv,0.4908,215.62
+baseline,BASELINE,faster,measures/in/original_04.mkv,0.6535,257.18
+baseline,BASELINE,fast,measures/in/original_04.mkv,0.8863,285.09
+baseline,BASELINE,medium,measures/in/original_04.mkv,1.1592,292.54
+baseline,BASELINE,slow,measures/in/original_04.mkv,1.7917,294.94
+baseline,BASELINE,slower,measures/in/original_04.mkv,2.5564,292.84
+baseline,BASELINE,veryslow,measures/in/original_04.mkv,4.8147,275.76
+baseline,BASELINE,placebo,measures/in/original_04.mkv,24.3757,285.72
+baseline,BASELINE,ultrafast,measures/in/original_07.mkv,0.4769,1139.78
+baseline,BASELINE,superfast,measures/in/original_07.mkv,0.5357,664.53
+baseline,BASELINE,veryfast,measures/in/original_07.mkv,0.9290,323.88
+baseline,BASELINE,faster,measures/in/original_07.mkv,1.1204,357.80
+baseline,BASELINE,fast,measures/in/original_07.mkv,1.3377,381.23
+baseline,BASELINE,medium,measures/in/original_07.mkv,1.5974,373.51
+baseline,BASELINE,slow,measures/in/original_07.mkv,2.4142,369.05
+baseline,BASELINE,slower,measures/in/original_07.mkv,4.6238,364.79
+baseline,BASELINE,veryslow,measures/in/original_07.mkv,8.6946,344.72
+baseline,BASELINE,placebo,measures/in/original_07.mkv,43.4120,354.53
+baseline,BASELINE,ultrafast,measures/in/original_03.mkv,0.6070,3920.98
+baseline,BASELINE,superfast,measures/in/original_03.mkv,0.6211,2279.32
+baseline,BASELINE,veryfast,measures/in/original_03.mkv,1.1801,2410.79
+baseline,BASELINE,faster,measures/in/original_03.mkv,1.7933,2465.54
+baseline,BASELINE,fast,measures/in/original_03.mkv,2.4668,2478.86
+baseline,BASELINE,medium,measures/in/original_03.mkv,3.0714,2460.31
+baseline,BASELINE,slow,measures/in/original_03.mkv,6.2864,2454.72
+baseline,BASELINE,slower,measures/in/original_03.mkv,11.5669,2445.12
+baseline,BASELINE,veryslow,measures/in/original_03.mkv,21.3379,2323.47
+baseline,BASELINE,placebo,measures/in/original_03.mkv,68.4204,2326.55
+baseline,BASELINE,ultrafast,measures/in/original_05.mkv,0.5223,2217.21
+baseline,BASELINE,superfast,measures/in/original_05.mkv,0.6214,1452.48
+baseline,BASELINE,veryfast,measures/in/original_05.mkv,1.0885,1178.82
+baseline,BASELINE,faster,measures/in/original_05.mkv,1.6243,1221.03
+baseline,BASELINE,fast,measures/in/original_05.mkv,2.1457,1239.66
+baseline,BASELINE,medium,measures/in/original_05.mkv,2.5629,1197.77
+baseline,BASELINE,slow,measures/in/original_05.mkv,3.6115,1186.29
+baseline,BASELINE,slower,measures/in/original_05.mkv,7.7568,1170.67
+baseline,BASELINE,veryslow,measures/in/original_05.mkv,14.9021,1123.99
+baseline,BASELINE,placebo,measures/in/original_05.mkv,46.4398,1131.56
+baseline,BASELINE,ultrafast,measures/in/original_02.mkv,0.6182,698.97
+baseline,BASELINE,superfast,measures/in/original_02.mkv,0.6332,511.41
+baseline,BASELINE,veryfast,measures/in/original_02.mkv,0.7612,262.90
+baseline,BASELINE,faster,measures/in/original_02.mkv,1.5334,309.50
+baseline,BASELINE,fast,measures/in/original_02.mkv,1.3602,347.19
+baseline,BASELINE,medium,measures/in/original_02.mkv,1.9111,318.83
+baseline,BASELINE,slow,measures/in/original_02.mkv,2.4970,302.13
+baseline,BASELINE,slower,measures/in/original_02.mkv,3.9337,307.46
+baseline,BASELINE,veryslow,measures/in/original_02.mkv,7.6113,274.33
+baseline,BASELINE,placebo,measures/in/original_02.mkv,26.6960,282.93
+baseline,BASELINE,ultrafast,measures/in/o1.mkv,0.5435,1746.47
+baseline,BASELINE,superfast,measures/in/o1.mkv,0.7601,1393.69
+baseline,BASELINE,veryfast,measures/in/o1.mkv,0.9880,1052.52
+baseline,BASELINE,faster,measures/in/o1.mkv,1.1021,1060.35
+baseline,BASELINE,fast,measures/in/o1.mkv,1.4389,1044.34
+baseline,BASELINE,medium,measures/in/o1.mkv,2.0619,1044.98
+baseline,BASELINE,slow,measures/in/o1.mkv,3.2379,1043.40
+baseline,BASELINE,slower,measures/in/o1.mkv,3.8140,504.85
+baseline,BASELINE,veryslow,measures/in/o1.mkv,7.3741,760.47
+baseline,BASELINE,placebo,measures/in/o1.mkv,21.8796,351.33
+baseline,BASELINE,ultrafast,measures/in/original_06.mkv,0.2516,416.18
+baseline,BASELINE,superfast,measures/in/original_06.mkv,0.2066,140.00
+baseline,BASELINE,veryfast,measures/in/original_06.mkv,0.1708,50.17
+baseline,BASELINE,faster,measures/in/original_06.mkv,0.2061,71.18
+baseline,BASELINE,fast,measures/in/original_06.mkv,0.2574,80.21
+baseline,BASELINE,medium,measures/in/original_06.mkv,0.3230,86.74
+baseline,BASELINE,slow,measures/in/original_06.mkv,0.4472,87.63
+baseline,BASELINE,slower,measures/in/original_06.mkv,0.5248,81.69
+baseline,BASELINE,veryslow,measures/in/original_06.mkv,1.0547,69.89
+baseline,BASELINE,placebo,measures/in/original_06.mkv,3.3338,71.20
+baseline,BASELINE,ultrafast,measures/in/original_08.mkv,0.6897,3016.81
+baseline,BASELINE,superfast,measures/in/original_08.mkv,0.9913,1825.88
+baseline,BASELINE,veryfast,measures/in/original_08.mkv,1.2270,1613.72
+baseline,BASELINE,faster,measures/in/original_08.mkv,1.8154,1686.97
+baseline,BASELINE,fast,measures/in/original_08.mkv,2.4918,1585.01
+baseline,BASELINE,medium,measures/in/original_08.mkv,3.1567,1574.94
+baseline,BASELINE,slow,measures/in/original_08.mkv,5.1734,1535.36
+baseline,BASELINE,slower,measures/in/original_08.mkv,9.8436,1564.86
+baseline,BASELINE,veryslow,measures/in/original_08.mkv,19.9149,1535.08
+baseline,BASELINE,placebo,measures/in/original_08.mkv,79.9509,1485.87
+specialized,"['PSY_NO', 'MIXED_REFS_YES', 'CABAC_YES', 'MBTREE_YES', 'WEIGHTB_YES']",ultrafast,measures/in/original_01.mkv,0.4050,1879.26
+specialized,"['PSY_NO', 'MIXED_REFS_YES', 'CABAC_YES', 'MBTREE_YES', 'WEIGHTB_YES']",ultrafast,measures/in/original_04.mkv,0.6293,1113.00
+specialized,"['PSY_NO', 'MIXED_REFS_YES', 'CABAC_YES', 'MBTREE_YES', 'WEIGHTB_YES']",ultrafast,measures/in/original_07.mkv,0.9872,1139.78
+specialized,"['PSY_NO', 'MIXED_REFS_YES', 'CABAC_YES', 'MBTREE_YES', 'WEIGHTB_YES']",ultrafast,measures/in/original_03.mkv,0.4409,3920.98
+specialized,"['PSY_NO', 'MIXED_REFS_YES', 'CABAC_YES', 'MBTREE_YES', 'WEIGHTB_YES']",ultrafast,measures/in/original_05.mkv,0.3611,2217.21
+specialized,"['PSY_NO', 'MIXED_REFS_YES', 'CABAC_YES', 'MBTREE_YES', 'WEIGHTB_YES']",ultrafast,measures/in/original_02.mkv,0.3035,698.97
+specialized,"['PSY_NO', 'MIXED_REFS_YES', 'CABAC_YES', 'MBTREE_YES', 'WEIGHTB_YES']",ultrafast,measures/in/o1.mkv,0.5358,1746.47
+specialized,"['PSY_NO', 'MIXED_REFS_YES', 'CABAC_YES', 'MBTREE_YES', 'WEIGHTB_YES']",ultrafast,measures/in/original_06.mkv,0.1330,416.18
+specialized,"['PSY_NO', 'MIXED_REFS_YES', 'CABAC_YES', 'MBTREE_YES', 'WEIGHTB_YES']",ultrafast,measures/in/original_08.mkv,0.4048,3016.81
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",veryfast,measures/in/original_01.mkv,0.6290,1000.18
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",veryfast,measures/in/original_04.mkv,0.4794,157.25
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",veryfast,measures/in/original_07.mkv,0.6564,261.15
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",veryfast,measures/in/original_03.mkv,1.0874,3030.37
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",veryfast,measures/in/original_05.mkv,0.9860,1154.41
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",veryfast,measures/in/original_02.mkv,0.6810,142.70
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",veryfast,measures/in/o1.mkv,0.7006,994.16
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",veryfast,measures/in/original_06.mkv,0.1673,44.67
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",veryfast,measures/in/original_08.mkv,1.0329,1716.46
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",medium,measures/in/original_01.mkv,1.5756,1021.28
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",medium,measures/in/original_04.mkv,0.9473,157.49
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",medium,measures/in/original_07.mkv,1.2865,271.20
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",medium,measures/in/original_03.mkv,2.7534,3056.34
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",medium,measures/in/original_05.mkv,2.1824,1158.20
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",medium,measures/in/original_02.mkv,1.2107,167.45
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",medium,measures/in/o1.mkv,1.4016,998.45
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",medium,measures/in/original_06.mkv,0.3022,50.85
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",medium,measures/in/original_08.mkv,2.6381,1567.52
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",veryslow,measures/in/original_01.mkv,6.2393,699.82
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",veryslow,measures/in/original_04.mkv,4.1469,141.07
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",veryslow,measures/in/original_07.mkv,7.4885,256.53
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",veryslow,measures/in/original_03.mkv,20.4829,2993.59
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",veryslow,measures/in/original_05.mkv,12.3879,1107.48
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",veryslow,measures/in/original_02.mkv,6.5229,157.07
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",veryslow,measures/in/o1.mkv,6.0249,711.06
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",veryslow,measures/in/original_06.mkv,0.8459,47.38
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",veryslow,measures/in/original_08.mkv,17.1775,1591.20
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slow,measures/in/original_01.mkv,2.8686,1039.81
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slow,measures/in/original_04.mkv,1.3760,152.03
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slow,measures/in/original_07.mkv,2.0704,266.19
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slow,measures/in/original_03.mkv,5.3445,3030.61
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slow,measures/in/original_05.mkv,3.4332,1142.44
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slow,measures/in/original_02.mkv,1.6019,158.55
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slow,measures/in/o1.mkv,2.5882,1000.10
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slow,measures/in/original_06.mkv,0.4156,49.33
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slow,measures/in/original_08.mkv,4.4101,1514.22
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",faster,measures/in/original_01.mkv,1.0418,1021.50
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",faster,measures/in/original_04.mkv,0.8676,154.18
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",faster,measures/in/original_07.mkv,1.1276,265.77
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",faster,measures/in/original_03.mkv,1.6363,3063.35
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",faster,measures/in/original_05.mkv,1.5773,1172.60
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",faster,measures/in/original_02.mkv,0.9994,167.59
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",faster,measures/in/o1.mkv,0.9072,1002.89
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",faster,measures/in/original_06.mkv,0.2631,48.59
+specialized,"['CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES']",faster,measures/in/original_08.mkv,1.7681,1776.02
+specialized,"['CABAC_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES', 'MBTREE_YES']",superfast,measures/in/original_01.mkv,0.6441,1882.26
+specialized,"['CABAC_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES', 'MBTREE_YES']",superfast,measures/in/original_04.mkv,0.7284,577.76
+specialized,"['CABAC_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES', 'MBTREE_YES']",superfast,measures/in/original_07.mkv,0.8205,664.53
+specialized,"['CABAC_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES', 'MBTREE_YES']",superfast,measures/in/original_03.mkv,0.8008,2279.32
+specialized,"['CABAC_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES', 'MBTREE_YES']",superfast,measures/in/original_05.mkv,0.8023,1452.48
+specialized,"['CABAC_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES', 'MBTREE_YES']",superfast,measures/in/original_02.mkv,0.6826,511.41
+specialized,"['CABAC_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES', 'MBTREE_YES']",superfast,measures/in/o1.mkv,0.5858,1393.69
+specialized,"['CABAC_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES', 'MBTREE_YES']",superfast,measures/in/original_06.mkv,0.2123,140.00
+specialized,"['CABAC_NO', 'WEIGHTB_NO', 'PSY_NO', 'MIXED_REFS_YES', 'MBTREE_YES']",superfast,measures/in/original_08.mkv,1.0002,1825.88
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",placebo,measures/in/original_01.mkv,19.2180,297.72
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",placebo,measures/in/original_04.mkv,20.7280,143.31
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",placebo,measures/in/original_07.mkv,34.9375,271.24
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",placebo,measures/in/original_03.mkv,62.8992,2999.03
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",placebo,measures/in/original_05.mkv,39.2871,1114.86
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",placebo,measures/in/original_02.mkv,18.8841,163.64
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",placebo,measures/in/o1.mkv,15.8751,278.39
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",placebo,measures/in/original_06.mkv,3.0560,48.46
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",placebo,measures/in/original_08.mkv,72.6875,1412.73
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slower,measures/in/original_01.mkv,3.8502,396.18
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slower,measures/in/original_04.mkv,2.3093,147.24
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slower,measures/in/original_07.mkv,3.6223,264.25
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slower,measures/in/original_03.mkv,10.5812,3014.67
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slower,measures/in/original_05.mkv,6.2423,1128.34
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slower,measures/in/original_02.mkv,2.8220,160.13
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slower,measures/in/o1.mkv,3.3896,391.04
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slower,measures/in/original_06.mkv,0.5177,48.86
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",slower,measures/in/original_08.mkv,9.8077,1571.40
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",fast,measures/in/original_01.mkv,1.5836,1020.28
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",fast,measures/in/original_04.mkv,0.8792,154.10
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",fast,measures/in/original_07.mkv,1.3036,272.89
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",fast,measures/in/original_03.mkv,2.2543,3067.71
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",fast,measures/in/original_05.mkv,1.9920,1198.20
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",fast,measures/in/original_02.mkv,1.2144,178.76
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",fast,measures/in/o1.mkv,1.1148,997.48
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",fast,measures/in/original_06.mkv,0.2735,49.53
+specialized,"['MIXED_REFS_NO', 'CABAC_NO', 'MBTREE_NO', 'WEIGHTB_NO', 'PSY_NO']",fast,measures/in/original_08.mkv,2.3603,1583.74

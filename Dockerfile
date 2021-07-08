@@ -15,7 +15,6 @@ RUN sudo dnf install -y nasm \
                         cmake \
                         git-core \
                         libass-devel \
-                        libtool \
                         libva-devel \
                         libvdpau-devel \
                         libvorbis-devel \
@@ -24,34 +23,26 @@ RUN sudo dnf install -y nasm \
                         pkg-config \
                         texinfo \
                         wget \
-                        yasm 
+                        yasm \
+                        curl \
+                        unzip \
+                        bzip2
+RUN sudo pip install ropgadget
 
-# Must be checked why ffms2 doesn't get installed :/ 
-# Apparently ffmpeg is written in C++ and needs to compile as C app.
+# Install the ffmpeg library for lavf support
 RUN sudo dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 RUN sudo dnf -y install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 RUN sudo dnf -y install ffmpeg
 RUN sudo dnf -y install ffmpeg-devel
 RUN whereis ffmpeg
 
-# WORKDIR /usr/lib/
-# RUN git clone -b n4.3.2 https://github.com/FFmpeg/FFmpeg.git
-# RUN dir
-# RUN cd FFmpeg
-# RUN dir
-# WORKDIR /usr/lib/FFmpeg
-# RUN ./configure
-# RUN make install
-# WORKDIR ../
-
-
-# WORKDIR /usr/lib/
-# RUN git clone -b 2.21 https://github.com/FFMS/ffms2.git
-# RUN cd ffms2
-# WORKDIR /usr/lib/ffms2
-# RUN ./configure
-# RUN make install
-# WORKDIR ../
+# Install the ffms2 library for ffms support
+WORKDIR /usr/lib/
+RUN git clone -b 2.23 https://github.com/FFMS/ffms2.git
+RUN cd ffms2
+WORKDIR /usr/lib/ffms2
+RUN ./configure
+RUN make install
 
 # Install the lsmash library for mp4 support
 WORKDIR /usr/lib
@@ -60,7 +51,6 @@ RUN cd l-smash
 WORKDIR /usr/lib/l-smash
 RUN ./configure
 RUN make install
-WORKDIR ../
 
 
 # Add local files to the image then compile the x264
@@ -71,7 +61,7 @@ ADD . .
 
 # Run the scripts to calculate the binary size 
 # depending from the compil-time options
-#RUN ["python3", "./measures/compilex264.py"]
+CMD ["python3", "./measures/exe_size.py"]
 
 # Run a container from the build image to show the results
 #CMD ["cat", "/x264/measures/exesize.txt"]
