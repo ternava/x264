@@ -220,7 +220,7 @@ def do_operations(spec, spec_file):
 #for i in range(2, 11):
 
 header = ['System', 'Option', "FromFile", 'Preset', 'Video', 'EncodingTime', 'EncodingBitrate', 'FPS']
-f = open('measures/stats_encoding15.csv', 'w') # + "0%s.csv"% i, 'w')
+f = open('measures/stats_encoding18.csv', 'w') # + "0%s.csv"% i, 'w')
 writer = csv.writer(f)
 writer.writerow(header)
 
